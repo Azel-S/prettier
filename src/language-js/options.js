@@ -6,6 +6,13 @@ const CATEGORY_JAVASCRIPT = "JavaScript";
 
 // format based on https://github.com/prettier/prettier/blob/main/src/main/core-options.js
 module.exports = {
+  allmanStyle: {
+    since: "1.0.0",
+    category: CATEGORY_JAVASCRIPT,
+    type: "boolean",
+    default: false,
+    description: "Puts the '{' on a new line.",
+  },
   arrowParens: {
     since: "1.9.0",
     category: CATEGORY_JAVASCRIPT,

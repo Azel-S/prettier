@@ -5233,8 +5233,8 @@ parse-json@^5.0.0, parse-json@^5.2.0:
 
 parse-srcset@ikatyang/parse-srcset#54eb9c1cb21db5c62b4d0e275d7249516df6f0ee:
   version "1.0.2"
-  resolved "git+ssh://git@github.com/ikatyang/parse-srcset.git#54eb9c1cb21db5c62b4d0e275d7249516df6f0ee"
-  integrity sha512-tvBbQcED2ggJXWjWQjhyD2peHCmCqG7cV3tVknu/0hJQ/oPpL787uktmm4x+ziWq37iuZfnOZmVYqrcCHsLU+Q==
+  resolved "git+ssh://git@github.com/ikatyang/parse-srcset.git"
+  integrity sha512-ce2O+5uSVSOaU3FPdSuWT5teLCw4F/jzAiOKEjsDCJRqrnHFhLgt+P4DxLEr29EnAwwV/tSiDrgTB9x0i+wIOw==
 
 parse5@6.0.1:
   version "6.0.1"

@@ -13,6 +13,7 @@ const {
 const { printHardlineAfterHeritage } = require("./class.js");
 
 const { printBody } = require("./statement.js");
+const { allmanStyle } = require("../options.js");
 
 /** @typedef {import("../../document").Doc} Doc */
 
@@ -27,6 +28,10 @@ function printBlock(path, options, print) {
   if (node.type === "ClassBody" && isNonEmptyArray(node.body)) {
     const parent = path.getParentNode();
     parts.push(printHardlineAfterHeritage(parent));
+  }
+
+  if (options.allmanStyle) {
+    parts.push(hardline);
   }
 
   parts.push("{");
