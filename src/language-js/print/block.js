@@ -35,6 +35,15 @@ function printBlock(path, options, print) {
   }
 
   parts.push("{");
+
+  if (isNonEmptyArray(node.body) && options.multiEmptyLine) {
+    const blockStartingLine = node.loc.start.line;
+    const statementStartingLine = node.body[0].loc.start.line;
+    for (let i = blockStartingLine + 1; i < statementStartingLine; i++) {
+      parts.push(hardline);
+    }
+  }
+
   const printed = printBlockBody(path, options, print);
   if (printed) {
     parts.push(indent([hardline, printed]), hardline);
@@ -60,6 +69,15 @@ function printBlock(path, options, print) {
         node.type === "ClassBody"
       )
     ) {
+      parts.push(hardline);
+    }
+  }
+
+  if (isNonEmptyArray(node.body) && options.multiEmptyLine) {
+    const blockEndingLine = node.loc.end.line;
+    const bodyCount = node.body.length;
+    const statementEndingLine = node.body[bodyCount - 1].loc.end.line;
+    for (let i = statementEndingLine + 1; i < blockEndingLine; i++) {
       parts.push(hardline);
     }
   }

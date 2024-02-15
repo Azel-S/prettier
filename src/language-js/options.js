@@ -41,6 +41,12 @@ module.exports = {
     type: "boolean",
     description: "puts else statement on a new line instead of on the same line as if statement right bracket.",
   },
+  multiEmptyLine :{
+    since: "0.0.0",
+    category: CATEGORY_JAVASCRIPT,
+    type: "boolean",
+    description: "allow empty multi-line at the start and the end of blocks."
+  },
   jsxBracketSameLine: {
     since: "0.17.0",
     category: CATEGORY_JAVASCRIPT,
