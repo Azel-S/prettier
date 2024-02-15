@@ -1,6 +1,7 @@
 "use strict";
 
 const { isNonEmptyArray } = require("../../common/util.js");
+const { hardline } = require("../../document/doc-builders.js");
 const {
   builders: { indent, join, line },
 } = require("../../document/index.js");
@@ -81,11 +82,9 @@ function adjustClause(node, clause, forceSpace) {
   if (node.type === "EmptyStatement") {
     return ";";
   }
-
   if (node.type === "BlockStatement" || forceSpace) {
     return [" ", clause];
   }
-
   return indent([line, clause]);
 }
 

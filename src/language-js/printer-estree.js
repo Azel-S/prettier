@@ -519,7 +519,7 @@ function printPathNoParens(path, options, print, args) {
             CommentCheckFlags.Trailing | CommentCheckFlags.Line
           ) || needsHardlineAfterDanglingComment(node);
         const elseOnSameLine =
-          node.consequent.type === "BlockStatement" && !commentOnOwnLine;
+          (node.consequent.type === "BlockStatement" && !commentOnOwnLine) && !options.elseStatementNewLine;
         parts.push(elseOnSameLine ? " " : hardline);
 
         if (hasComment(node, CommentCheckFlags.Dangling)) {
