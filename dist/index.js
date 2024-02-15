@@ -25803,6 +25803,9 @@ var require_misc = __commonJS2({
       isNonEmptyArray
     } = require_util();
     var {
+      hardline
+    } = require_doc_builders();
+    var {
       builders: {
         indent,
         join,
@@ -29003,6 +29006,12 @@ var require_options2 = __commonJS2({
       },
       bracketSameLine: commonOptions.bracketSameLine,
       bracketSpacing: commonOptions.bracketSpacing,
+      elseStatementNewLine: {
+        since: "0.0.0",
+        category: CATEGORY_JAVASCRIPT,
+        type: "boolean",
+        description: "puts else statement on a new line instead of on the same line as if statement right bracket."
+      },
       jsxBracketSameLine: {
         since: "0.17.0",
         category: CATEGORY_JAVASCRIPT,
@@ -30075,7 +30084,7 @@ var require_printer_estree = __commonJS2({
           parts.push(opening);
           if (node.alternate) {
             const commentOnOwnLine = hasComment(node.consequent, CommentCheckFlags.Trailing | CommentCheckFlags.Line) || needsHardlineAfterDanglingComment(node);
-            const elseOnSameLine = node.consequent.type === "BlockStatement" && !commentOnOwnLine;
+            const elseOnSameLine = node.consequent.type === "BlockStatement" && !commentOnOwnLine && !options.elseStatementNewLine;
             parts.push(elseOnSameLine ? " " : hardline);
             if (hasComment(node, CommentCheckFlags.Dangling)) {
               parts.push(printDanglingComments(path, options, true), commentOnOwnLine ? hardline : " ");
