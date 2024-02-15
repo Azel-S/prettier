@@ -29012,6 +29012,12 @@ var require_options2 = __commonJS2({
         type: "boolean",
         description: "puts else statement on a new line instead of on the same line as if statement right bracket."
       },
+      multiEmptyLine: {
+        since: "0.0.0",
+        category: CATEGORY_JAVASCRIPT,
+        type: "boolean",
+        description: "allow empty multi-line at the start and the end of blocks."
+      },
       jsxBracketSameLine: {
         since: "0.17.0",
         category: CATEGORY_JAVASCRIPT,
@@ -29125,6 +29131,13 @@ var require_block = __commonJS2({
         parts.push(hardline);
       }
       parts.push("{");
+      if (isNonEmptyArray(node.body) && options.multiEmptyLine) {
+        const blockStartingLine = node.loc.start.line;
+        const statementStartingLine = node.body[0].loc.start.line;
+        for (let i = blockStartingLine + 1; i < statementStartingLine; i++) {
+          parts.push(hardline);
+        }
+      }
       const printed = printBlockBody(path, options, print);
       if (printed) {
         parts.push(indent([hardline, printed]), hardline);
@@ -29132,6 +29145,14 @@ var require_block = __commonJS2({
         const parent = path.getParentNode();
         const parentParent = path.getParentNode(1);
         if (!(parent.type === "ArrowFunctionExpression" || parent.type === "FunctionExpression" || parent.type === "FunctionDeclaration" || parent.type === "ObjectMethod" || parent.type === "ClassMethod" || parent.type === "ClassPrivateMethod" || parent.type === "ForStatement" || parent.type === "WhileStatement" || parent.type === "DoWhileStatement" || parent.type === "DoExpression" || parent.type === "CatchClause" && !parentParent.finalizer || parent.type === "TSModuleDeclaration" || parent.type === "TSDeclareFunction" || node.type === "StaticBlock" || node.type === "ClassBody")) {
+          parts.push(hardline);
+        }
+      }
+      if (isNonEmptyArray(node.body) && options.multiEmptyLine) {
+        const blockEndingLine = node.loc.end.line;
+        const bodyCount = node.body.length;
+        const statementEndingLine = node.body[bodyCount - 1].loc.end.line;
+        for (let i = statementEndingLine + 1; i < blockEndingLine; i++) {
           parts.push(hardline);
         }
       }
