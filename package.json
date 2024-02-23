@@ -167,7 +167,9 @@
     "build": "node ./scripts/build/build.mjs",
     "build:website": "node ./scripts/build-website.mjs",
     "vendors:bundle": "node ./scripts/vendors/bundle-vendors.mjs",
-    "build-local": "npm run build && cd .. && shx cp -R prettier/dist/ prettier-vscode/node_modules/prettier/ && cd prettier"
+    "build-local-win": "npm run build && cd .. && robocopy prettier/dist/ prettier-vscode/node_modules/prettier/ && cd prettier",
+    "build-local-mac": "npm run build && cd .. && cp -R prettier/dist/ prettier-vscode/node_modules/prettier/ && cd prettier",
+    "build-local": "npm run build && cd .. && robocopy prettier/dist/ prettier-vscode/node_modules/prettier/ && cd prettier"
   },
   "browserslist": [
     ">0.5%",
