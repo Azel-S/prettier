@@ -28772,7 +28772,15 @@ var require_statement = __commonJS2({
         if (node2 !== lastStatement) {
           parts.push(hardline);
           if (isNextLineEmpty(node2, options)) {
-            parts.push(hardline);
+            if (options.retainBlankLines) {
+              for (let i = node2.loc.start.line; i < node2.end.line - 1; i++) {
+                if (node2.originalText[i] == "\n") {
+                  parts.push(hardline);
+                }
+              }
+            } else {
+              parts.push(hardline);
+            }
           }
         }
       }, property);
@@ -28908,186 +28916,6 @@ var require_statement = __commonJS2({
     };
   }
 });
-var require_common_options = __commonJS2({
-  "src/common/common-options.js"(exports2, module2) {
-    "use strict";
-    var CATEGORY_COMMON = "Common";
-    module2.exports = {
-      bracketSpacing: {
-        since: "0.0.0",
-        category: CATEGORY_COMMON,
-        type: "boolean",
-        default: true,
-        description: "Print spaces between brackets.",
-        oppositeDescription: "Do not print spaces between brackets."
-      },
-      singleQuote: {
-        since: "0.0.0",
-        category: CATEGORY_COMMON,
-        type: "boolean",
-        default: false,
-        description: "Use single quotes instead of double quotes."
-      },
-      proseWrap: {
-        since: "1.8.2",
-        category: CATEGORY_COMMON,
-        type: "choice",
-        default: [{
-          since: "1.8.2",
-          value: true
-        }, {
-          since: "1.9.0",
-          value: "preserve"
-        }],
-        description: "How to wrap prose.",
-        choices: [{
-          since: "1.9.0",
-          value: "always",
-          description: "Wrap prose if it exceeds the print width."
-        }, {
-          since: "1.9.0",
-          value: "never",
-          description: "Do not wrap prose."
-        }, {
-          since: "1.9.0",
-          value: "preserve",
-          description: "Wrap prose as-is."
-        }]
-      },
-      bracketSameLine: {
-        since: "2.4.0",
-        category: CATEGORY_COMMON,
-        type: "boolean",
-        default: false,
-        description: "Put > of opening tags on the last line instead of on a new line."
-      },
-      singleAttributePerLine: {
-        since: "2.6.0",
-        category: CATEGORY_COMMON,
-        type: "boolean",
-        default: false,
-        description: "Enforce single attribute per line in HTML, Vue and JSX."
-      }
-    };
-  }
-});
-var require_options2 = __commonJS2({
-  "src/language-js/options.js"(exports2, module2) {
-    "use strict";
-    var commonOptions = require_common_options();
-    var CATEGORY_JAVASCRIPT = "JavaScript";
-    module2.exports = {
-      allmanStyle: {
-        since: "1.0.0",
-        category: CATEGORY_JAVASCRIPT,
-        type: "boolean",
-        default: false,
-        description: "Puts the '{' on a new line."
-      },
-      arrowParens: {
-        since: "1.9.0",
-        category: CATEGORY_JAVASCRIPT,
-        type: "choice",
-        default: [{
-          since: "1.9.0",
-          value: "avoid"
-        }, {
-          since: "2.0.0",
-          value: "always"
-        }],
-        description: "Include parentheses around a sole arrow function parameter.",
-        choices: [{
-          value: "always",
-          description: "Always include parens. Example: `(x) => x`"
-        }, {
-          value: "avoid",
-          description: "Omit parens when possible. Example: `x => x`"
-        }]
-      },
-      bracketSameLine: commonOptions.bracketSameLine,
-      bracketSpacing: commonOptions.bracketSpacing,
-      elseStatementNewLine: {
-        since: "0.0.0",
-        category: CATEGORY_JAVASCRIPT,
-        type: "boolean",
-        description: "puts else statement on a new line instead of on the same line as if statement right bracket."
-      },
-      multiEmptyLine: {
-        since: "0.0.0",
-        category: CATEGORY_JAVASCRIPT,
-        type: "boolean",
-        description: "allow empty multi-line at the start and the end of blocks."
-      },
-      jsxBracketSameLine: {
-        since: "0.17.0",
-        category: CATEGORY_JAVASCRIPT,
-        type: "boolean",
-        description: "Put > on the last line instead of at a new line.",
-        deprecated: "2.4.0"
-      },
-      semi: {
-        since: "1.0.0",
-        category: CATEGORY_JAVASCRIPT,
-        type: "boolean",
-        default: true,
-        description: "Print semicolons.",
-        oppositeDescription: "Do not print semicolons, except at the beginning of lines which may need them."
-      },
-      singleQuote: commonOptions.singleQuote,
-      jsxSingleQuote: {
-        since: "1.15.0",
-        category: CATEGORY_JAVASCRIPT,
-        type: "boolean",
-        default: false,
-        description: "Use single quotes in JSX."
-      },
-      quoteProps: {
-        since: "1.17.0",
-        category: CATEGORY_JAVASCRIPT,
-        type: "choice",
-        default: "as-needed",
-        description: "Change when properties in objects are quoted.",
-        choices: [{
-          value: "as-needed",
-          description: "Only add quotes around object properties where required."
-        }, {
-          value: "consistent",
-          description: "If at least one property in an object requires quotes, quote all properties."
-        }, {
-          value: "preserve",
-          description: "Respect the input use of quotes in object properties."
-        }]
-      },
-      trailingComma: {
-        since: "0.0.0",
-        category: CATEGORY_JAVASCRIPT,
-        type: "choice",
-        default: [{
-          since: "0.0.0",
-          value: false
-        }, {
-          since: "0.19.0",
-          value: "none"
-        }, {
-          since: "2.0.0",
-          value: "es5"
-        }],
-        description: "Print trailing commas wherever possible when multi-line.",
-        choices: [{
-          value: "es5",
-          description: "Trailing commas where valid in ES5 (objects, arrays, etc.)"
-        }, {
-          value: "none",
-          description: "No trailing commas."
-        }, {
-          value: "all",
-          description: "Trailing commas wherever possible (including function arguments)."
-        }]
-      },
-      singleAttributePerLine: commonOptions.singleAttributePerLine
-    };
-  }
-});
 var require_block = __commonJS2({
   "src/language-js/print/block.js"(exports2, module2) {
     "use strict";
@@ -29114,9 +28942,6 @@ var require_block = __commonJS2({
     var {
       printBody
     } = require_statement();
-    var {
-      allmanStyle
-    } = require_options2();
     function printBlock(path, options, print) {
       const node = path.getValue();
       const parts = [];
@@ -30365,6 +30190,192 @@ var require_printer_estree_json = __commonJS2({
       preprocess,
       print: genericPrint,
       massageAstNode: clean
+    };
+  }
+});
+var require_common_options = __commonJS2({
+  "src/common/common-options.js"(exports2, module2) {
+    "use strict";
+    var CATEGORY_COMMON = "Common";
+    module2.exports = {
+      bracketSpacing: {
+        since: "0.0.0",
+        category: CATEGORY_COMMON,
+        type: "boolean",
+        default: true,
+        description: "Print spaces between brackets.",
+        oppositeDescription: "Do not print spaces between brackets."
+      },
+      singleQuote: {
+        since: "0.0.0",
+        category: CATEGORY_COMMON,
+        type: "boolean",
+        default: false,
+        description: "Use single quotes instead of double quotes."
+      },
+      proseWrap: {
+        since: "1.8.2",
+        category: CATEGORY_COMMON,
+        type: "choice",
+        default: [{
+          since: "1.8.2",
+          value: true
+        }, {
+          since: "1.9.0",
+          value: "preserve"
+        }],
+        description: "How to wrap prose.",
+        choices: [{
+          since: "1.9.0",
+          value: "always",
+          description: "Wrap prose if it exceeds the print width."
+        }, {
+          since: "1.9.0",
+          value: "never",
+          description: "Do not wrap prose."
+        }, {
+          since: "1.9.0",
+          value: "preserve",
+          description: "Wrap prose as-is."
+        }]
+      },
+      bracketSameLine: {
+        since: "2.4.0",
+        category: CATEGORY_COMMON,
+        type: "boolean",
+        default: false,
+        description: "Put > of opening tags on the last line instead of on a new line."
+      },
+      singleAttributePerLine: {
+        since: "2.6.0",
+        category: CATEGORY_COMMON,
+        type: "boolean",
+        default: false,
+        description: "Enforce single attribute per line in HTML, Vue and JSX."
+      }
+    };
+  }
+});
+var require_options2 = __commonJS2({
+  "src/language-js/options.js"(exports2, module2) {
+    "use strict";
+    var commonOptions = require_common_options();
+    var CATEGORY_JAVASCRIPT = "JavaScript";
+    module2.exports = {
+      allmanStyle: {
+        since: "1.0.0",
+        category: CATEGORY_JAVASCRIPT,
+        type: "boolean",
+        default: false,
+        description: "Puts the '{' on a new line."
+      },
+      arrowParens: {
+        since: "1.9.0",
+        category: CATEGORY_JAVASCRIPT,
+        type: "choice",
+        default: [{
+          since: "1.9.0",
+          value: "avoid"
+        }, {
+          since: "2.0.0",
+          value: "always"
+        }],
+        description: "Include parentheses around a sole arrow function parameter.",
+        choices: [{
+          value: "always",
+          description: "Always include parens. Example: `(x) => x`"
+        }, {
+          value: "avoid",
+          description: "Omit parens when possible. Example: `x => x`"
+        }]
+      },
+      bracketSameLine: commonOptions.bracketSameLine,
+      bracketSpacing: commonOptions.bracketSpacing,
+      elseStatementNewLine: {
+        since: "0.0.0",
+        category: CATEGORY_JAVASCRIPT,
+        type: "boolean",
+        description: "puts else statement on a new line instead of on the same line as if statement right bracket."
+      },
+      multiEmptyLine: {
+        since: "0.0.0",
+        category: CATEGORY_JAVASCRIPT,
+        type: "boolean",
+        description: "allow empty multi-line at the start and the end of blocks."
+      },
+      retainBlankLines: {
+        since: "0.0.0",
+        category: CATEGORY_JAVASCRIPT,
+        type: "boolean",
+        description: "keeps multiple blank lines instead of collapsing into a single blank line"
+      },
+      jsxBracketSameLine: {
+        since: "0.17.0",
+        category: CATEGORY_JAVASCRIPT,
+        type: "boolean",
+        description: "Put > on the last line instead of at a new line.",
+        deprecated: "2.4.0"
+      },
+      semi: {
+        since: "1.0.0",
+        category: CATEGORY_JAVASCRIPT,
+        type: "boolean",
+        default: true,
+        description: "Print semicolons.",
+        oppositeDescription: "Do not print semicolons, except at the beginning of lines which may need them."
+      },
+      singleQuote: commonOptions.singleQuote,
+      jsxSingleQuote: {
+        since: "1.15.0",
+        category: CATEGORY_JAVASCRIPT,
+        type: "boolean",
+        default: false,
+        description: "Use single quotes in JSX."
+      },
+      quoteProps: {
+        since: "1.17.0",
+        category: CATEGORY_JAVASCRIPT,
+        type: "choice",
+        default: "as-needed",
+        description: "Change when properties in objects are quoted.",
+        choices: [{
+          value: "as-needed",
+          description: "Only add quotes around object properties where required."
+        }, {
+          value: "consistent",
+          description: "If at least one property in an object requires quotes, quote all properties."
+        }, {
+          value: "preserve",
+          description: "Respect the input use of quotes in object properties."
+        }]
+      },
+      trailingComma: {
+        since: "0.0.0",
+        category: CATEGORY_JAVASCRIPT,
+        type: "choice",
+        default: [{
+          since: "0.0.0",
+          value: false
+        }, {
+          since: "0.19.0",
+          value: "none"
+        }, {
+          since: "2.0.0",
+          value: "es5"
+        }],
+        description: "Print trailing commas wherever possible when multi-line.",
+        choices: [{
+          value: "es5",
+          description: "Trailing commas where valid in ES5 (objects, arrays, etc.)"
+        }, {
+          value: "none",
+          description: "No trailing commas."
+        }, {
+          value: "all",
+          description: "Trailing commas wherever possible (including function arguments)."
+        }]
+      },
+      singleAttributePerLine: commonOptions.singleAttributePerLine
     };
   }
 });
@@ -36189,7 +36200,8 @@ var require_parse_srcset = __commonJS2({
         root.parseSrcset = factory();
       }
     })(exports2, function() {
-      return function(input) {
+      return function(input, options) {
+        var logger = options && options.logger || console;
         function isSpace(c2) {
           return c2 === " " || c2 === "	" || c2 === "\n" || c2 === "\f" || c2 === "\r";
         }
@@ -36323,8 +36335,8 @@ var require_parse_srcset = __commonJS2({
               candidate.h = h;
             }
             candidates.push(candidate);
-          } else if (console && console.log) {
-            console.log("Invalid srcset descriptor found in '" + input + "' at '" + desc + "'.");
+          } else if (logger && logger.error) {
+            logger.error("Invalid srcset descriptor found in '" + input + "' at '" + desc + "'.");
           }
         }
       };

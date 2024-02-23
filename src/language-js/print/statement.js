@@ -69,7 +69,17 @@ function printStatementSequence(path, options, print, property) {
       parts.push(hardline);
 
       if (isNextLineEmpty(node, options)) {
-        parts.push(hardline);
+        if (options.retainBlankLines) {
+          for (let i = node.loc.start.line; i < node.end.line - 1; i++){
+            if (node.originalText[i] == '\n') {
+              parts.push(hardline);
+            }
+          }
+        }
+        else {
+          parts.push(hardline);
+        }
+        
       }
     }
   }, property);

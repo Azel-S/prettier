@@ -47,6 +47,12 @@ module.exports = {
     type: "boolean",
     description: "allow empty multi-line at the start and the end of blocks."
   },
+  retainBlankLines :{
+    since: "0.0.0",
+    category: CATEGORY_JAVASCRIPT,
+    type: "boolean",
+    description: "keeps multiple blank lines instead of collapsing into a single blank line"
+  },
   jsxBracketSameLine: {
     since: "0.17.0",
     category: CATEGORY_JAVASCRIPT,
