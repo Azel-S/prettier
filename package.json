@@ -165,7 +165,10 @@
     "fix:prettier": "yarn lint:prettier --write",
     "build": "node ./scripts/build/build.mjs",
     "build:website": "node ./scripts/build-website.mjs",
-    "vendors:bundle": "node ./scripts/vendors/bundle-vendors.mjs"
+    "vendors:bundle": "node ./scripts/vendors/bundle-vendors.mjs",
+    "build-local_win32": "npm run build && cd .. && robocopy prettier/dist/ prettier-vscode/node_modules/prettier/ && cd prettier",
+    "build-local_darwin": "npm run build && cd .. && cp -R prettier/dist/ prettier-vscode/node_modules/prettier/ && cd prettier",
+    "build-local": "node -e \"child_process.exec(`npm run build-local_${os.platform()}`)\""
   },
   "browserslist": [
     ">0.5%",
