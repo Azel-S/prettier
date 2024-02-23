@@ -6,8 +6,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: List bin dir
+          name: Test env setup?
           command: |
-            cd bin
-            ls -al
-            
+            npm --version
+            node --version
