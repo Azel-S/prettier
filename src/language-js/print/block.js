@@ -13,7 +13,6 @@ const {
 const { printHardlineAfterHeritage } = require("./class.js");
 
 const { printBody } = require("./statement.js");
-const { allmanStyle } = require("../options.js");
 
 /** @typedef {import("../../document").Doc} Doc */
 
