@@ -29134,8 +29134,15 @@ var require_block = __commonJS2({
       if (isNonEmptyArray(node.body) && options.multiEmptyLine) {
         const blockStartingLine = node.loc.start.line;
         const statementStartingLine = node.body[0].loc.start.line;
-        for (let i = blockStartingLine + 1; i < statementStartingLine; i++) {
-          parts.push(hardline);
+        if (hasComment(node.body[0])) {
+          const commentStartLine = node.body[0].comments[0].loc.start.line;
+          for (let i = blockStartingLine + 1; i < commentStartLine; i++) {
+            parts.push(hardline);
+          }
+        } else {
+          for (let i = blockStartingLine + 1; i < statementStartingLine; i++) {
+            parts.push(hardline);
+          }
         }
       }
       const printed = printBlockBody(path, options, print);
@@ -29151,9 +29158,18 @@ var require_block = __commonJS2({
       if (isNonEmptyArray(node.body) && options.multiEmptyLine) {
         const blockEndingLine = node.loc.end.line;
         const bodyCount = node.body.length;
-        const statementEndingLine = node.body[bodyCount - 1].loc.end.line;
-        for (let i = statementEndingLine + 1; i < blockEndingLine; i++) {
-          parts.push(hardline);
+        const lastBody = node.body[bodyCount - 1];
+        const statementEndingLine = lastBody.loc.end.line;
+        if (hasComment(node.body[bodyCount - 1])) {
+          const commentCount = lastBody.comments.length;
+          const commentStartLine = lastBody.comments[commentCount - 1].loc.end.line;
+          for (let i = commentStartLine + 1; i < blockEndingLine; i++) {
+            parts.push(hardline);
+          }
+        } else {
+          for (let i = statementEndingLine + 1; i < blockEndingLine; i++) {
+            parts.push(hardline);
+          }
         }
       }
       parts.push("}");
@@ -36189,7 +36205,8 @@ var require_parse_srcset = __commonJS2({
         root.parseSrcset = factory();
       }
     })(exports2, function() {
-      return function(input) {
+      return function(input, options) {
+        var logger = options && options.logger || console;
         function isSpace(c2) {
           return c2 === " " || c2 === "	" || c2 === "\n" || c2 === "\f" || c2 === "\r";
         }
@@ -36323,8 +36340,8 @@ var require_parse_srcset = __commonJS2({
               candidate.h = h;
             }
             candidates.push(candidate);
-          } else if (console && console.log) {
-            console.log("Invalid srcset descriptor found in '" + input + "' at '" + desc + "'.");
+          } else if (logger && logger.error) {
+            logger.error("Invalid srcset descriptor found in '" + input + "' at '" + desc + "'.");
           }
         }
       };
