@@ -6,6 +6,8 @@ jobs:
     steps:
       - checkout
       - run:
-          name: List dir
+          name: List bin dir
           command: |
+            cd bin
             ls -al
+            
