@@ -1,8 +1,9 @@
 version: 2.1
+orbs:
+  node: circleci/node@5.0.2
 jobs:
-  build:
-    docker:
-      - image: circleci/node@5.0.2
+  build_and_test:
+    executer: node/default
     steps:
       - checkout
       - node/install-packages:
