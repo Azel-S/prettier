@@ -13,6 +13,7 @@ jobs:
             yarn
             yarn test
           name: Run tests
+          no_output_timeout: 30m
       - run:
           command: yarn build
           name: Build app
