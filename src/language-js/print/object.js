@@ -23,6 +23,7 @@ const { printOptionalToken, printTypeAnnotation } = require("./misc.js");
 const { shouldHugFunctionParameters } = require("./function-parameters.js");
 const { shouldHugType } = require("./type-annotation.js");
 const { printHardlineAfterHeritage } = require("./class.js");
+const { forceObjectBreak } = require("../options.js");
 
 /** @typedef {import("../../document").Doc} Doc */
 
@@ -58,7 +59,9 @@ function printObject(path, options, print) {
       parent.type === "DeclareInterface" ||
       parent.type === "DeclareClass") &&
     path.getName() === "body";
-  const shouldBreak =
+  const shouldBreak = options.forceObjectBreak === 'forceMultiLine' ? true
+    : options.forceObjectBreak === 'forceSingleLine' ? false
+    : // If options.forceObjectBreak is 'preserve', we use the original behavior
     node.type === "TSInterfaceBody" ||
     isFlowInterfaceLikeBody ||
     (node.type === "ObjectPattern" &&
