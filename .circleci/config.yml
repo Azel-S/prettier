@@ -10,7 +10,6 @@ jobs:
           pkg-manager: yarn
       - run:
           command: |
-            yarn
             yarn test
           name: Run tests
           no_output_timeout: 30m
