@@ -13,7 +13,7 @@ jobs:
           pkg-manager: yarn
       - run:
           command: |
-            yarn test
+            yarn test --runInBand
           name: Run tests
           no_output_timeout: 30m
       - run:
