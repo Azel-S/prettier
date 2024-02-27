@@ -29134,9 +29134,6 @@ var require_block = __commonJS2({
     var {
       printBody
     } = require_statement();
-    var {
-      allmanStyle
-    } = require_options2();
     function printBlock(path, options, print) {
       const node = path.getValue();
       const parts = [];
