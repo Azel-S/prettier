@@ -6,6 +6,30 @@ const CATEGORY_JAVASCRIPT = "JavaScript";
 
 // format based on https://github.com/prettier/prettier/blob/main/src/main/core-options.js
 module.exports = {
+  forceObjectBreak: {
+    since: "1.0.0",
+    category: CATEGORY_JAVASCRIPT,
+    type: "choice",
+    default: "preserve",
+    description: "Controls line breaks in object literals",
+    choices: [
+      {
+        value: "preserve",
+        description:
+          "Prettier's original behavior, which chooses between one-line and multi-line based on the presense of a new line after the opening '{'.",
+      },
+      { 
+        value: "forceSingleLine", 
+        description: 
+          "Objects literals will always be formated to a single line." 
+      },
+      {
+        value: "forceMultiLine",
+        description:
+          "Object literals will always be formatted to multiple lines, where possible.",
+      },
+    ],
+  },
   allmanStyle: {
     since: "1.0.0",
     category: CATEGORY_JAVASCRIPT,
