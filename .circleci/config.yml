@@ -27,3 +27,11 @@ jobs:
           command: yarn test --runInBand || true
           name: Run tests
           no_output_timeout: 30m
+
+wordkflows:
+  build_and_test:
+    jobs:
+      - build
+      - test
+ 
+
