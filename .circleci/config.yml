@@ -15,7 +15,6 @@ jobs:
           command: yarn build
           name: Build app
   test: 
-    executor: node/default
     steps:
       - checkout
       - run:
