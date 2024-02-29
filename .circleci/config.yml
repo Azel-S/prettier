@@ -14,15 +14,6 @@ jobs:
       - run:
           command: yarn build
           name: Build app
-  test: 
-    executor: node/default
-    steps:
-      - checkout
-      - run:
-          command: npm install
-          name: install npm packages
-      - node/install-packages:
-          pkg-manager: yarn
       - run:
           command: yarn test --runInBand || true
           name: Run tests
@@ -34,5 +25,7 @@ wordkflows:
     jobs:
       - build
       - test
+          requires: 
+            - build
  
 
