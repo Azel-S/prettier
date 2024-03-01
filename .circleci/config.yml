@@ -26,8 +26,6 @@ jobs:
           command: yarn test --runInBand || true
           name: Run tests
           no_output_timeout: 30m
-      - store_test_results:
-          path: tests/results
 
 workflows:
   build_and_test:
