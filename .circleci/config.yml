@@ -1,30 +1,72 @@
+# version: 2.1
+# orbs:
+#   node: circleci/node@5.0.2
+# jobs:
+#   build:
+#     executor: node/default
+#     steps:
+#       - checkout
+#       - run:
+#           command: npm install
+#           name: install npm packages
+#       - node/install-packages:
+#           pkg-manager: yarn
+#       - run:
+#           command: yarn build
+#       - run:
+#           command: yarn test --runInBand || true
+#           name: Run tests
+#           no_output_timeout: 30m
+#       - store_test_results:
+#           path: results
+
+# wordkflows:
+#   version: 2
+#   build_and_test:
+#     jobs:
+#       - build
+#       - test
+ 
+
 version: 2.1
-orbs:
-  node: circleci/node@5.0.2
 jobs:
-  build:
-    executor: node/default
+  # running commands on a basic image
+  Hello-World:
+    docker:
+      - image: cimg/base:2021.04
+    steps:
+      - run:
+          name: Saying Hello
+          command: |
+            echo 'Hello World!'
+            echo 'This is the delivery pipeline'
+  # fetching code from the repo
+  Fetch-Code:
+    docker:
+      - image: cimg/base:2021.04
     steps:
       - checkout
       - run:
-          command: npm install
-          name: install npm packages
-      - node/install-packages:
-          pkg-manager: yarn
+          name: Getting the Code
+          command: |
+            ls -al
+            echo '^^^Your repo files^^^'
+  # running a node container
+  Using-Node:
+    docker:
+      - image: cimg/node:17.2
+    steps:
       - run:
-          command: yarn build
-      - run:
-          command: yarn test --runInBand || true
-          name: Run tests
-          no_output_timeout: 30m
-      - store_test_results:
-          path: results
-
-wordkflows:
-  version: 2
-  build_and_test:
+          name: Running the Node Container
+          command: |
+            node -v
+workflows:
+  Example-Workflow:
     jobs:
-      - build
-      - test
- 
-
+      - Hello-World
+      - Fetch-Code:
+          requires:
+            - Hello-World
+      - Using-Node:
+          requires:
+            - Fetch-Code
