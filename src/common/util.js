@@ -77,6 +77,16 @@ function hasNewline(text, index, opts = {}) {
   return idx !== idx2;
 }
 
+function getNewlineIdx(text, index, opts = {}) {
+  const idx = skipSpaces(text, opts.backwards ? index - 1 : index, opts);
+  const idx2 = skipNewline(text, idx, opts);
+  if (idx !== idx2) {
+    return idx2;
+  } else {
+    return -1;
+  }
+}
+
 /**
  * @param {string} text
  * @param {number} start
@@ -129,6 +139,38 @@ function isNextLineEmptyAfterIndex(text, index) {
   idx = skipTrailingComment(text, idx);
   idx = skipNewline(text, idx);
   return idx !== false && hasNewline(text, idx);
+}
+
+/**
+ * @param {string} text
+ * @param {number} index
+ * @returns {number}
+ */
+//computation for number of blank lines 
+function numNextLineEmptyAfterIndex(text, index) {
+  let numBlank = 0;
+
+  /** @type {number | false} */
+  let oldIdx = null;
+  /** @type {number | false} */
+  let idx = index;
+  while (idx !== oldIdx) {
+    // We need to skip all the potential trailing inline comments
+    oldIdx = idx;
+    idx = skipToLineEnd(text, idx);
+    idx = skipInlineComment(text, idx);
+    idx = skipSpaces(text, idx);
+  }
+  idx = skipTrailingComment(text, idx);
+  idx = skipNewline(text, idx);
+
+  while(idx !== false && hasNewline(text, idx)) {
+    idx = skipSpaces(text, idx);
+    idx = skipNewline(text, idx);
+    numBlank++;
+  }
+
+  return numBlank;
 }
 
 /**
@@ -500,6 +542,7 @@ module.exports = {
   skipTrailingComment,
   skipNewline,
   isNextLineEmptyAfterIndex,
+  numNextLineEmptyAfterIndex,
   isNextLineEmpty,
   isPreviousLineEmpty,
   hasNewline,
