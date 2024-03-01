@@ -33,8 +33,7 @@ wordkflows:
   build_and_test:
     jobs:
       - build
-      - test:
-          requires:
-            - build
+      - test
+        - store_test_results
  
 
