@@ -13,7 +13,7 @@ const {
   isNumericLiteral,
   isSignedNumericLiteral,
 } = require("../utils/index.js");
-const { locStart } = require("../loc.js");
+const { locStart, locEnd } = require("../loc.js");
 
 const { printOptionalToken, printTypeAnnotation } = require("./misc.js");
 
@@ -142,6 +142,37 @@ function isConciselyPrintedArray(node, options) {
   );
 }
 
+function isMatrixArray(node, options) {
+  if (!isConciselyPrintedArray(node, options)) {
+    return false;
+  }
+
+  let lines = options.originalText.substr(locStart(node), locEnd(node) - locStart(node)).split('\n');
+  let numCommas = [];
+
+  if (lines.length <= 2) {
+    return false;
+  }
+
+  for (let i = 0; i < lines.length; i++) {
+    numCommas.push(0);
+
+    for (let j = 0; j < lines[i].length; j++) {
+      if (lines[i][j] == ',') {
+        numCommas[i]++;
+      }
+    }
+
+    if (i > 2 && i < lines.length - 1 && numCommas[i] != numCommas[i - 1]) {
+      if (i != lines.length - 2 || numCommas[i] + 1 != numCommas[i - 1]) {
+        return false;
+      }
+    }
+  }
+
+  return numCommas[0] == 0 && numCommas[numCommas.length - 1] == 0;
+}
+
 function printArrayItems(path, options, printPath, print) {
   const printedElements = [];
   let separatorParts = [];
@@ -164,24 +195,42 @@ function printArrayItems(path, options, printPath, print) {
 function printArrayItemsConcisely(path, options, print, trailingComma) {
   const parts = [];
 
-  path.each((childPath, i, elements) => {
-    const isLast = i === elements.length - 1;
+  if (options.matrixArray && isMatrixArray(path.getValue(), options)) {
+    path.each((childPath, i, elements) => {
+      const isLast = i === elements.length - 1;
 
-    parts.push([print(), isLast ? trailingComma : ","]);
+      parts.push([print(), isLast ? trailingComma : ","]);
 
-    if (!isLast) {
-      parts.push(
-        isNextLineEmpty(childPath.getValue(), options)
-          ? [hardline, hardline]
-          : hasComment(
+      if (!isLast) {
+        parts.push(
+          i + 1 >= elements.length
+            ? line
+            : (elements[i].loc.start.line === elements[i + 1].loc.start.line)
+              ? line
+              : hardline
+        );
+      }
+    }, "elements");
+  } else {
+    path.each((childPath, i, elements) => {
+      const isLast = i === elements.length - 1;
+
+      parts.push([print(), isLast ? trailingComma : ","]);
+
+      if (!isLast) {
+        parts.push(
+          isNextLineEmpty(childPath.getValue(), options)
+            ? [hardline, hardline]
+            : hasComment(
               elements[i + 1],
               CommentCheckFlags.Leading | CommentCheckFlags.Line
             )
-          ? hardline
-          : line
-      );
-    }
-  }, "elements");
+              ? hardline
+              : line
+        );
+      }
+    }, "elements");
+  }
 
   return fill(parts);
 }
