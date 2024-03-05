@@ -29151,7 +29151,7 @@ var require_block = __commonJS2({
       if (isNonEmptyArray(node.body) && options.multiEmptyLine) {
         const blockStartingLine = node.loc.start.line;
         const statementStartingLine = node.body[0].loc.start.line;
-        if (hasComment(node.body[0])) {
+        if (hasComment(node.body[0]) && node.body[0].comments[0].loc.start.line < statementStartingLine) {
           const commentStartLine = node.body[0].comments[0].loc.start.line;
           for (let i = blockStartingLine + 1; i < commentStartLine; i++) {
             parts.push(hardline);
@@ -29177,7 +29177,7 @@ var require_block = __commonJS2({
         const bodyCount = node.body.length;
         const lastBody = node.body[bodyCount - 1];
         const statementEndingLine = lastBody.loc.end.line;
-        if (hasComment(node.body[bodyCount - 1])) {
+        if (hasComment(node.body[bodyCount - 1]) && lastBody.comments[lastBody.comments.length - 1].loc.end.line > statementEndingLine) {
           const commentCount = lastBody.comments.length;
           const commentStartLine = lastBody.comments[commentCount - 1].loc.end.line;
           for (let i = commentStartLine + 1; i < blockEndingLine; i++) {
