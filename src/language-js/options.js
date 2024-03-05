@@ -30,13 +30,6 @@ module.exports = {
       },
     ],
   },
-  keepParentheses: {
-    since: "1.0.0",
-    category: CATEGORY_JAVASCRIPT,
-    type: "boolean",
-    default: false,
-    description: "retain parentheses in logical expressions",
-  },
   allmanStyle: {
     since: "1.0.0",
     category: CATEGORY_JAVASCRIPT,
