@@ -1,5 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`show detailed usage with --help allman-style (stderr) 1`] = `""`;
+
+exports[`show detailed usage with --help allman-style (stdout) 1`] = `
+"--allman-style
+
+  Puts the '{' on a new line.
+
+Default: false
+"
+`;
+
+exports[`show detailed usage with --help allman-style (write) 1`] = `[]`;
+
 exports[`show detailed usage with --help arrow-parens (stderr) 1`] = `""`;
 
 exports[`show detailed usage with --help arrow-parens (stdout) 1`] = `
@@ -166,6 +179,17 @@ Default: true
 `;
 
 exports[`show detailed usage with --help editorconfig (write) 1`] = `[]`;
+
+exports[`show detailed usage with --help else-statement-new-line (stderr) 1`] = `""`;
+
+exports[`show detailed usage with --help else-statement-new-line (stdout) 1`] = `
+"--else-statement-new-line
+
+  puts else statement on a new line instead of on the same line as if statement right bracket.
+"
+`;
+
+exports[`show detailed usage with --help else-statement-new-line (write) 1`] = `[]`;
 
 exports[`show detailed usage with --help embedded-language-formatting (stderr) 1`] = `""`;
 
@@ -342,6 +366,17 @@ Default: log
 `;
 
 exports[`show detailed usage with --help loglevel (write) 1`] = `[]`;
+
+exports[`show detailed usage with --help multi-empty-line (stderr) 1`] = `""`;
+
+exports[`show detailed usage with --help multi-empty-line (stdout) 1`] = `
+"--multi-empty-line
+
+  allow empty multi-line at the start and the end of blocks.
+"
+`;
+
+exports[`show detailed usage with --help multi-empty-line (write) 1`] = `[]`;
 
 exports[`show detailed usage with --help no-bracket-spacing (stderr) 1`] = `""`;
 
