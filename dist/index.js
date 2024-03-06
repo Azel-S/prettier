@@ -30921,10 +30921,10 @@ var require_utils8 = __commonJS2({
       const selector = ruleAncestorNode === null || ruleAncestorNode === void 0 ? void 0 : (_ruleAncestorNode$raw = ruleAncestorNode.raws) === null || _ruleAncestorNode$raw === void 0 ? void 0 : _ruleAncestorNode$raw.selector;
       return selector && (selector.startsWith(":import") || selector.startsWith(":export"));
     }
-    function insideAtRuleNode(path, atRuleNameOrAtRuleNames) {
+    function insideAtRuleNode(path, atRuleNameOrAtRuleNames, options = {}) {
       const atRuleNames = Array.isArray(atRuleNameOrAtRuleNames) ? atRuleNameOrAtRuleNames : [atRuleNameOrAtRuleNames];
       const atRuleAncestorNode = getAncestorNode(path, "css-atrule");
-      return atRuleAncestorNode && atRuleNames.includes(atRuleAncestorNode.name.toLowerCase());
+      return atRuleAncestorNode && atRuleNames.includes(atRuleAncestorNode.name.toLowerCase()) || options.selectorsSameLine === true;
     }
     function insideURLFunctionInImportAtRuleNode(path) {
       const node = path.getValue();
@@ -31626,7 +31626,7 @@ var require_printer_postcss = __commonJS2({
           return node.value;
         }
         case "selector-root": {
-          return group([insideAtRuleNode(path, "custom-selector") ? [getAncestorNode(path, "css-atrule").customSelector, line] : "", join([",", insideAtRuleNode(path, ["extend", "custom-selector", "nest"]) ? line : hardline], path.map(print, "nodes"))]);
+          return group([insideAtRuleNode(path, "custom-selector") ? [getAncestorNode(path, "css-atrule").customSelector, line] : "", join([",", insideAtRuleNode(path, ["extend", "custom-selector", "nest"], options) ? line : hardline], path.map(print, "nodes"))]);
         }
         case "selector-selector": {
           return group(indent(path.map(print, "nodes")));
@@ -32005,8 +32005,16 @@ var require_options3 = __commonJS2({
   "src/language-css/options.js"(exports2, module2) {
     "use strict";
     var commonOptions = require_common_options();
+    var CATEGORY_CSS = "css";
     module2.exports = {
-      singleQuote: commonOptions.singleQuote
+      singleQuote: commonOptions.singleQuote,
+      selectorsSameLine: {
+        since: "1.0.0",
+        category: CATEGORY_CSS,
+        type: "boolean",
+        default: false,
+        description: "allow multiple css selectors to be on the same line"
+      }
     };
   }
 });
