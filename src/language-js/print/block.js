@@ -20,6 +20,9 @@ function printBlock(path, options, print) {
   const node = path.getValue();
   const parts = [];
 
+  const { kind } = path.getParentNode();
+  const gettersetter = (options.getSetOneLine && (kind === "get" || kind === "set"));
+
   if (node.type === "StaticBlock") {
     parts.push("static ");
   }
@@ -29,7 +32,7 @@ function printBlock(path, options, print) {
     parts.push(printHardlineAfterHeritage(parent));
   }
 
-  if (options.allmanStyle) {
+  if (options.allmanStyle && !gettersetter) {
     parts.push(hardline);
   }
 
@@ -55,7 +58,9 @@ function printBlock(path, options, print) {
   }
 
   const printed = printBlockBody(path, options, print);
-  if (printed) {
+  if (printed && gettersetter) {
+    parts.push(indent([" ", printed]), hardline);
+  } else if (printed) {
     parts.push(indent([hardline, printed]), hardline);
   } else {
     const parent = path.getParentNode();
@@ -102,6 +107,11 @@ function printBlock(path, options, print) {
         parts.push(hardline);
       }  
     }
+  }
+
+  if (gettersetter) {
+    parts.pop();
+    parts.push(" ");
   }
 
   parts.push("}");

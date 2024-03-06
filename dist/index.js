@@ -28301,6 +28301,13 @@ var require_options2 = __commonJS2({
         description: "Print semicolons.",
         oppositeDescription: "Do not print semicolons, except at the beginning of lines which may need them."
       },
+      getSetOneLine: {
+        since: "1.0.0",
+        category: CATEGORY_JAVASCRIPT,
+        type: "boolean",
+        default: false,
+        description: "Put getter/setter content on one line"
+      },
       singleQuote: commonOptions.singleQuote,
       jsxSingleQuote: {
         since: "1.15.0",
@@ -29137,6 +29144,10 @@ var require_block = __commonJS2({
     function printBlock(path, options, print) {
       const node = path.getValue();
       const parts = [];
+      const {
+        kind
+      } = path.getParentNode();
+      const gettersetter = options.getSetOneLine && (kind === "get" || kind === "set");
       if (node.type === "StaticBlock") {
         parts.push("static ");
       }
@@ -29144,7 +29155,7 @@ var require_block = __commonJS2({
         const parent = path.getParentNode();
         parts.push(printHardlineAfterHeritage(parent));
       }
-      if (options.allmanStyle) {
+      if (options.allmanStyle && !gettersetter) {
         parts.push(hardline);
       }
       parts.push("{");
@@ -29163,7 +29174,9 @@ var require_block = __commonJS2({
         }
       }
       const printed = printBlockBody(path, options, print);
-      if (printed) {
+      if (printed && gettersetter) {
+        parts.push(indent([" ", printed]), hardline);
+      } else if (printed) {
         parts.push(indent([hardline, printed]), hardline);
       } else {
         const parent = path.getParentNode();
@@ -29188,6 +29201,10 @@ var require_block = __commonJS2({
             parts.push(hardline);
           }
         }
+      }
+      if (gettersetter) {
+        parts.pop();
+        parts.push(" ");
       }
       parts.push("}");
       return parts;
