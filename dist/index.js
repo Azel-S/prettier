@@ -26066,29 +26066,28 @@ var require_array4 = __commonJS2({
         backwards: true
       })));
     }
-    function isMatrixArray(node, options) {
-      if (!isConciselyPrintedArray(node, options)) {
+    function isMatrixArray(path, options) {
+      if (!isConciselyPrintedArray(path.getValue(), options)) {
         return false;
       }
-      let lines = options.originalText.substr(locStart(node), locEnd(node) - locStart(node)).split("\n");
-      let numCommas = [];
-      if (lines.length <= 2) {
-        return false;
-      }
-      for (let i = 0; i < lines.length; i++) {
-        numCommas.push(0);
-        for (let j = 0; j < lines[i].length; j++) {
-          if (lines[i][j] == ",") {
-            numCommas[i]++;
-          }
+      let rowElements = [];
+      let startRow = -1;
+      path.each((childPath, i, elements) => {
+        if (startRow === -1) {
+          startRow = elements[i].loc.start.line;
         }
-        if (i > 2 && i < lines.length - 1 && numCommas[i] != numCommas[i - 1]) {
-          if (i != lines.length - 2 || numCommas[i] + 1 != numCommas[i - 1]) {
-            return false;
-          }
+        if (elements[i].loc.start.line - startRow >= rowElements.length) {
+          rowElements.push(1);
+        } else {
+          rowElements[rowElements.length - 1] = rowElements[rowElements.length - 1] + 1;
+        }
+      }, "elements");
+      for (let i = 0; i < rowElements.length - 1; i++) {
+        if (rowElements[i] !== rowElements[i + 1]) {
+          return false;
         }
       }
-      return numCommas[0] == 0 && numCommas[numCommas.length - 1] == 0;
+      return true;
     }
     function printArrayItems(path, options, printPath, print) {
       const printedElements = [];
@@ -26104,7 +26103,7 @@ var require_array4 = __commonJS2({
     }
     function printArrayItemsConcisely(path, options, print, trailingComma) {
       const parts = [];
-      if (options.matrixArray && isMatrixArray(path.getValue(), options)) {
+      if (options.matrixArray && isMatrixArray(path, options)) {
         path.each((childPath, i, elements) => {
           const isLast = i === elements.length - 1;
           parts.push([print(), isLast ? trailingComma : ","]);
