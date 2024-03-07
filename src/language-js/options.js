@@ -95,6 +95,13 @@ module.exports = {
     default: false,
     description: "Use single quotes in JSX.",
   },
+  classMemberOrder: {
+    since: "1.0.0",
+    category: CATEGORY_JAVASCRIPT,
+    type: "boolean",
+    default: false,
+    description: "Print private class members before public class members",
+  },
   quoteProps: {
     since: "1.17.0",
     category: CATEGORY_JAVASCRIPT,
