@@ -6,6 +6,13 @@ const CATEGORY_JAVASCRIPT = "JavaScript";
 
 // format based on https://github.com/prettier/prettier/blob/main/src/main/core-options.js
 module.exports = {
+  matrixArray: {
+    since: "1.0.0",
+    category: CATEGORY_JAVASCRIPT,
+    type: "boolean",
+    default: true,
+    description: "Preserves arrays that resemble a matrix.",
+  },
   forceObjectBreak: {
     since: "1.0.0",
     category: CATEGORY_JAVASCRIPT,
