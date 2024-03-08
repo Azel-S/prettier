@@ -74,7 +74,7 @@ function skip(chars) {
 function hasNewline(text, index, opts = {}) {
   const idx = skipSpaces(text, opts.backwards ? index - 1 : index, opts);
   const idx2 = skipNewline(text, idx, opts);
-  return idx !== idx2;
+  return idx !== idx2; 
 }
 
 function getNewlineIdx(text, index, opts = {}) {
@@ -119,6 +119,33 @@ function isPreviousLineEmpty(text, node, locStart) {
   return idx !== idx2;
 }
 
+// Note: this function doesn't ignore leading comments unlike isNextLineEmpty
+/**
+ * @template N
+ * @param {string} text
+ * @param {N} node
+ * @param {(node: N) => number} locStart
+ */
+//computation for number of blank lines before a specific line
+function numPreviousLineEmpty(text, node, locStart) {
+  let numBlankLinesPrev = 0;
+
+  /** @type {number | false} */
+  let idx = locStart(node) - 1;   
+  idx = skipSpaces(text, idx, { backwards: true });
+  idx = skipNewline(text, idx, { backwards: true });
+  idx = skipSpaces(text, idx, { backwards: true });
+  let idx2 = skipNewline(text, idx, { backwards: true });
+  
+  while(idx !== false && idx !== idx2) {
+    idx = skipSpaces(text, idx2, { backwards: true });
+    idx2 = skipNewline(text, idx, { backwards: true });
+    numBlankLinesPrev++;
+  }
+  
+  return numBlankLinesPrev;
+}
+
 /**
  * @param {string} text
  * @param {number} index
@@ -146,9 +173,9 @@ function isNextLineEmptyAfterIndex(text, index) {
  * @param {number} index
  * @returns {number}
  */
-//computation for number of blank lines 
+//computation for number of blank lines after a specific line
 function numNextLineEmptyAfterIndex(text, index) {
-  let numBlank = 0;
+  let numBlankLinesAfter = 0;
 
   /** @type {number | false} */
   let oldIdx = null;
@@ -167,10 +194,10 @@ function numNextLineEmptyAfterIndex(text, index) {
   while(idx !== false && hasNewline(text, idx)) {
     idx = skipSpaces(text, idx);
     idx = skipNewline(text, idx);
-    numBlank++;
+    numBlankLinesAfter++;
   }
 
-  return numBlank;
+  return numBlankLinesAfter;
 }
 
 /**
@@ -545,6 +572,7 @@ module.exports = {
   numNextLineEmptyAfterIndex,
   isNextLineEmpty,
   isPreviousLineEmpty,
+  numPreviousLineEmpty,
   hasNewline,
   hasNewlineInRange,
   hasSpaces,

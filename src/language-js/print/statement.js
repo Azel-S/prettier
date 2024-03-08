@@ -16,6 +16,7 @@ const {
 } = require("../utils/index.js");
 const { shouldPrintParamsWithoutParens } = require("./function.js");
 const { locStart, locEnd } = require("../loc.js");
+const { isNextLineEmptyAfterIndex } = require("../../common/util.js");
 
 /**
  * @typedef {import("../../document").Doc} Doc
@@ -66,7 +67,7 @@ function printStatementSequence(path, options, print, property) {
     ) {
       parts.push(";");
     }
-    
+
     /*
       retainBlankLines -> preserves number of empty lines by iterating
       through count of empty lines
@@ -85,8 +86,8 @@ function printStatementSequence(path, options, print, property) {
         else {
           parts.push(hardline);
         }
-
       }
+      
     }
   }, property);
 

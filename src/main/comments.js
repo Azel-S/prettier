@@ -14,6 +14,8 @@ const {
   addLeadingComment,
   addDanglingComment,
   addTrailingComment,
+  numNextLineEmptyAfterIndex,
+  numPreviousLineEmpty
 } = require("../common/util.js");
 
 const childNodesCache = new WeakMap();
@@ -465,8 +467,15 @@ function printLeadingComment(path, options) {
     skipSpaces(originalText, locEnd(comment))
   );
 
-  if (index !== false && hasNewline(originalText, index)) {
-    parts.push(hardline);
+  //checking for retainBlankLines setting and preserving blank lines
+  //if present after leading comment
+  if (options.retainBlankLines) {
+    const numBlankLines = numNextLineEmptyAfterIndex(originalText, locEnd(comment));
+    for (let i = 0; i < numBlankLines; i++) {
+      parts.push(hardline);
+    }
+  } else if (index !== false && hasNewline(originalText, index)) {
+      parts.push(hardline);
   }
 
   return parts;
@@ -479,6 +488,7 @@ function printTrailingComment(path, options) {
   const { printer, originalText, locStart } = options;
   const isBlock = printer.isBlockComment && printer.isBlockComment(comment);
 
+  //for trailing comments: going backwards and checking for blank lines
   if (hasNewline(originalText, locStart(comment), { backwards: true })) {
     // This allows comments at the end of nested structures:
     // {
@@ -497,8 +507,22 @@ function printTrailingComment(path, options) {
       comment,
       locStart
     );
+    
+    //checks and preserves blank lines before trailing comment 
+    if (isLineBeforeEmpty && options.retainBlankLines) {
+      let parts = [];
+
+      const numBlankLines = numPreviousLineEmpty(originalText, comment, locStart);
+      for (let i = 0; i < numBlankLines; i++) {
+        parts.push(hardline);
+      }
+      
+      parts.push(hardline, printed); //adds comment
+      return lineSuffix(parts);
+    }
 
     return lineSuffix([hardline, isLineBeforeEmpty ? hardline : "", printed]);
+  
   }
 
   let parts = [" ", printed];
