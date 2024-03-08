@@ -26014,7 +26014,8 @@ var require_array4 = __commonJS2({
       isSignedNumericLiteral
     } = require_utils7();
     var {
-      locStart
+      locStart,
+      locEnd
     } = require_loc();
     var {
       printOptionalToken,
@@ -26065,6 +26066,29 @@ var require_array4 = __commonJS2({
         backwards: true
       })));
     }
+    function isMatrixArray(path, options) {
+      if (!isConciselyPrintedArray(path.getValue(), options)) {
+        return false;
+      }
+      let rowElements = [];
+      let startRow = -1;
+      path.each((childPath, i, elements) => {
+        if (startRow === -1) {
+          startRow = elements[i].loc.start.line;
+        }
+        if (elements[i].loc.start.line - startRow >= rowElements.length) {
+          rowElements.push(1);
+        } else {
+          rowElements[rowElements.length - 1] = rowElements[rowElements.length - 1] + 1;
+        }
+      }, "elements");
+      for (let i = 0; i < rowElements.length - 1; i++) {
+        if (rowElements[i] !== rowElements[i + 1]) {
+          return false;
+        }
+      }
+      return true;
+    }
     function printArrayItems(path, options, printPath, print) {
       const printedElements = [];
       let separatorParts = [];
@@ -26079,13 +26103,23 @@ var require_array4 = __commonJS2({
     }
     function printArrayItemsConcisely(path, options, print, trailingComma) {
       const parts = [];
-      path.each((childPath, i, elements) => {
-        const isLast = i === elements.length - 1;
-        parts.push([print(), isLast ? trailingComma : ","]);
-        if (!isLast) {
-          parts.push(isNextLineEmpty(childPath.getValue(), options) ? [hardline, hardline] : hasComment(elements[i + 1], CommentCheckFlags.Leading | CommentCheckFlags.Line) ? hardline : line);
-        }
-      }, "elements");
+      if (options.matrixArray && isMatrixArray(path, options)) {
+        path.each((childPath, i, elements) => {
+          const isLast = i === elements.length - 1;
+          parts.push([print(), isLast ? trailingComma : ","]);
+          if (!isLast) {
+            parts.push(i + 1 >= elements.length ? line : elements[i].loc.start.line === elements[i + 1].loc.start.line ? line : hardline);
+          }
+        }, "elements");
+      } else {
+        path.each((childPath, i, elements) => {
+          const isLast = i === elements.length - 1;
+          parts.push([print(), isLast ? trailingComma : ","]);
+          if (!isLast) {
+            parts.push(isNextLineEmpty(childPath.getValue(), options) ? [hardline, hardline] : hasComment(elements[i + 1], CommentCheckFlags.Leading | CommentCheckFlags.Line) ? hardline : line);
+          }
+        }, "elements");
+      }
       return fill(parts);
     }
     module2.exports = {
@@ -28346,6 +28380,13 @@ var require_options2 = __commonJS2({
     var commonOptions = require_common_options();
     var CATEGORY_JAVASCRIPT = "JavaScript";
     module2.exports = {
+      matrixArray: {
+        since: "1.0.0",
+        category: CATEGORY_JAVASCRIPT,
+        type: "boolean",
+        default: true,
+        description: "Preserves arrays that resemble a matrix."
+      },
       forceObjectBreak: {
         since: "1.0.0",
         category: CATEGORY_JAVASCRIPT,
