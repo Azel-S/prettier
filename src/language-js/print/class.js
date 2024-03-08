@@ -27,8 +27,8 @@ function printClass(path, options, print) {
   const node = path.getValue();
   const parts = [];
 
-  if (options.classMemberOrder) {
-    reorderClassVariables(path);
+  if (options.classMemberOrder != "none") {
+    reorderClassVariables(path, options);
   }
 
   if (node.declare) {
@@ -101,20 +101,24 @@ function printClass(path, options, print) {
   return parts;
 }
 
-function reorderClassVariables(path){
+function reorderClassVariables(path, options){
   const nodeMembers = path.getValue().body.body;
-  const sortedMembers = [];
+  const firstMembers = [];
+  const nextMembers = [];
+  let first_type = false;
+
+  if (options.classMemberOrder === "private first") {
+    first_type = true;
+  }
+  
   for (let index in nodeMembers) {
     const member = nodeMembers[index];
     const { type } = member;
-    if (type.includes("Private")) { sortedMembers.push(member); }
+    if (type.includes("Private") == first_type) { firstMembers.push(member); }
+    else { nextMembers.push(member); }
   }
 
-  for (let index in nodeMembers) {
-    const member = nodeMembers[index];
-    const { type } = member
-    if (!type.includes("Private")) { sortedMembers.push(member); }
-  }
+  const sortedMembers = firstMembers.concat(nextMembers);
 
   for (let ii in sortedMembers) {
     path.getValue().body.body[ii] = sortedMembers[ii];

@@ -27798,8 +27798,8 @@ var require_class = __commonJS2({
     function printClass(path, options, print) {
       const node = path.getValue();
       const parts = [];
-      if (options.classMemberOrder) {
-        reorderClassVariables(path);
+      if (options.classMemberOrder != "none") {
+        reorderClassVariables(path, options);
       }
       if (node.declare) {
         parts.push("declare ");
@@ -27843,27 +27843,26 @@ var require_class = __commonJS2({
       parts.push(" ", print("body"));
       return parts;
     }
-    function reorderClassVariables(path) {
+    function reorderClassVariables(path, options) {
       const nodeMembers = path.getValue().body.body;
-      const sortedMembers = [];
-      for (let index in nodeMembers) {
-        const member = nodeMembers[index];
-        const {
-          type
-        } = member;
-        if (type.includes("Private")) {
-          sortedMembers.push(member);
-        }
+      const firstMembers = [];
+      const nextMembers = [];
+      let first_type = false;
+      if (options.classMemberOrder === "private first") {
+        first_type = true;
       }
       for (let index in nodeMembers) {
         const member = nodeMembers[index];
         const {
           type
         } = member;
-        if (!type.includes("Private")) {
-          sortedMembers.push(member);
+        if (type.includes("Private") == first_type) {
+          firstMembers.push(member);
+        } else {
+          nextMembers.push(member);
         }
       }
+      const sortedMembers = firstMembers.concat(nextMembers);
       for (let ii in sortedMembers) {
         path.getValue().body.body[ii] = sortedMembers[ii];
       }
@@ -28431,9 +28430,19 @@ var require_options2 = __commonJS2({
       classMemberOrder: {
         since: "1.0.0",
         category: CATEGORY_JAVASCRIPT,
-        type: "boolean",
-        default: false,
-        description: "Print private class members before public class members"
+        type: "choice",
+        default: "none",
+        description: "Print private class members before public class members",
+        choices: [{
+          value: "none",
+          description: "Don't make any changes"
+        }, {
+          value: "private first",
+          description: "Print private members before public ones."
+        }, {
+          value: "public first",
+          description: "Print public members before private ones."
+        }]
       },
       quoteProps: {
         since: "1.17.0",
