@@ -95,17 +95,18 @@ function insideICSSRuleNode(path) {
   );
 }
 
-function insideAtRuleNode(path, atRuleNameOrAtRuleNames) {
-  const atRuleNames = Array.isArray(atRuleNameOrAtRuleNames)
+function insideAtRuleNode(path, atRuleNameOrAtRuleNames, options = {}) {
+  const atRuleNames = Array.isArray(atRuleNameOrAtRuleNames) 
     ? atRuleNameOrAtRuleNames
     : [atRuleNameOrAtRuleNames];
   const atRuleAncestorNode = getAncestorNode(path, "css-atrule");
 
   return (
     atRuleAncestorNode &&
-    atRuleNames.includes(atRuleAncestorNode.name.toLowerCase())
-  );
+    atRuleNames.includes(atRuleAncestorNode.name.toLowerCase()))
+      || options.selectorsSameLine === true;
 }
+
 
 function insideURLFunctionInImportAtRuleNode(path) {
   const node = path.getValue();
