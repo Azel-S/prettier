@@ -9,6 +9,7 @@ const {
   hasComment,
   CommentCheckFlags,
   isNextLineEmpty,
+  numNextLineEmpty
 } = require("../utils/index.js");
 const { printHardlineAfterHeritage } = require("./class.js");
 

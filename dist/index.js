@@ -3252,6 +3252,32 @@ var require_util = __commonJS2({
       });
       return idx !== idx2;
     }
+    function numPreviousLineEmpty(text, node, locStart) {
+      let numBlankLinesPrev = 0;
+      let idx = locStart(node) - 1;
+      idx = skipSpaces(text, idx, {
+        backwards: true
+      });
+      idx = skipNewline(text, idx, {
+        backwards: true
+      });
+      idx = skipSpaces(text, idx, {
+        backwards: true
+      });
+      let idx2 = skipNewline(text, idx, {
+        backwards: true
+      });
+      while (idx !== false && idx !== idx2) {
+        idx = skipSpaces(text, idx2, {
+          backwards: true
+        });
+        idx2 = skipNewline(text, idx, {
+          backwards: true
+        });
+        numBlankLinesPrev++;
+      }
+      return numBlankLinesPrev;
+    }
     function isNextLineEmptyAfterIndex(text, index) {
       let oldIdx = null;
       let idx = index;
@@ -3264,6 +3290,25 @@ var require_util = __commonJS2({
       idx = skipTrailingComment(text, idx);
       idx = skipNewline(text, idx);
       return idx !== false && hasNewline(text, idx);
+    }
+    function numNextLineEmptyAfterIndex(text, index) {
+      let numBlankLinesAfter = 0;
+      let oldIdx = null;
+      let idx = index;
+      while (idx !== oldIdx) {
+        oldIdx = idx;
+        idx = skipToLineEnd(text, idx);
+        idx = skipInlineComment(text, idx);
+        idx = skipSpaces(text, idx);
+      }
+      idx = skipTrailingComment(text, idx);
+      idx = skipNewline(text, idx);
+      while (idx !== false && hasNewline(text, idx)) {
+        idx = skipSpaces(text, idx);
+        idx = skipNewline(text, idx);
+        numBlankLinesAfter++;
+      }
+      return numBlankLinesAfter;
     }
     function isNextLineEmpty(text, node, locEnd) {
       return isNextLineEmptyAfterIndex(text, locEnd(node));
@@ -3448,8 +3493,10 @@ var require_util = __commonJS2({
       skipTrailingComment,
       skipNewline,
       isNextLineEmptyAfterIndex,
+      numNextLineEmptyAfterIndex,
       isNextLineEmpty,
       isPreviousLineEmpty,
+      numPreviousLineEmpty,
       hasNewline,
       hasNewlineInRange,
       hasSpaces,
@@ -7888,7 +7935,9 @@ var require_comments = __commonJS2({
       isPreviousLineEmpty,
       addLeadingComment,
       addDanglingComment,
-      addTrailingComment
+      addTrailingComment,
+      numNextLineEmptyAfterIndex,
+      numPreviousLineEmpty
     } = require_util();
     var childNodesCache = /* @__PURE__ */ new WeakMap();
     function getSortedChildNodes(node, options, resultArray) {
@@ -8217,7 +8266,12 @@ var require_comments = __commonJS2({
         parts.push(hardline);
       }
       const index = skipNewline(originalText, skipSpaces(originalText, locEnd(comment)));
-      if (index !== false && hasNewline(originalText, index)) {
+      if (options.retainBlankLines) {
+        const numBlankLines = numNextLineEmptyAfterIndex(originalText, locEnd(comment));
+        for (let i = 0; i < numBlankLines; i++) {
+          parts.push(hardline);
+        }
+      } else if (index !== false && hasNewline(originalText, index)) {
         parts.push(hardline);
       }
       return parts;
@@ -8235,6 +8289,15 @@ var require_comments = __commonJS2({
         backwards: true
       })) {
         const isLineBeforeEmpty = isPreviousLineEmpty(originalText, comment, locStart);
+        if (isLineBeforeEmpty && options.retainBlankLines) {
+          let parts2 = [];
+          const numBlankLines = numPreviousLineEmpty(originalText, comment, locStart);
+          for (let i = 0; i < numBlankLines; i++) {
+            parts2.push(hardline);
+          }
+          parts2.push(hardline, printed);
+          return lineSuffix(parts2);
+        }
         return lineSuffix([hardline, isLineBeforeEmpty ? hardline : "", printed]);
       }
       let parts = [" ", printed];
@@ -22040,6 +22103,7 @@ var require_utils7 = __commonJS2({
       skipWhitespace,
       isNonEmptyArray,
       isNextLineEmptyAfterIndex,
+      numNextLineEmptyAfterIndex,
       getStringWidth
     } = require_util();
     var {
@@ -22571,6 +22635,9 @@ var require_utils7 = __commonJS2({
     var isNextLineEmpty = (node, {
       originalText
     }) => isNextLineEmptyAfterIndex(originalText, locEnd(node));
+    var numNextLineEmpty = (node, {
+      originalText
+    }) => numNextLineEmptyAfterIndex(originalText, locEnd(node));
     function isCallLikeExpression(node) {
       return isCallExpression(node) || node.type === "NewExpression" || node.type === "ImportExpression";
     }
@@ -22637,6 +22704,7 @@ var require_utils7 = __commonJS2({
       isTSXFile,
       isTypeAnnotationAFunction,
       isNextLineEmpty,
+      numNextLineEmpty,
       needsHardlineAfterDanglingComment,
       rawText,
       shouldPrintComma,
@@ -28418,6 +28486,12 @@ var require_options2 = __commonJS2({
         type: "boolean",
         description: "allow empty multi-line at the start and the end of blocks."
       },
+      retainBlankLines: {
+        since: "0.0.0",
+        category: CATEGORY_JAVASCRIPT,
+        type: "boolean",
+        description: "keeps multiple blank lines instead of collapsing into a single blank line"
+      },
       jsxBracketSameLine: {
         since: "0.17.0",
         category: CATEGORY_JAVASCRIPT,
@@ -29071,11 +29145,19 @@ var require_statement = __commonJS2({
       isTheOnlyJsxElementInMarkdown,
       hasComment,
       CommentCheckFlags,
-      isNextLineEmpty
+      isNextLineEmpty,
+      numNextLineEmpty
     } = require_utils7();
     var {
       shouldPrintParamsWithoutParens
     } = require_function();
+    var {
+      locStart,
+      locEnd
+    } = require_loc();
+    var {
+      isNextLineEmptyAfterIndex
+    } = require_util();
     function printStatementSequence(path, options, print, property) {
       const node = path.getValue();
       const parts = [];
@@ -29104,7 +29186,14 @@ var require_statement = __commonJS2({
         if (node2 !== lastStatement) {
           parts.push(hardline);
           if (isNextLineEmpty(node2, options)) {
-            parts.push(hardline);
+            if (options.retainBlankLines) {
+              const numBlankLines = numNextLineEmpty(node2, options);
+              for (let i = 0; i < numBlankLines; i++) {
+                parts.push(hardline);
+              }
+            } else {
+              parts.push(hardline);
+            }
           }
         }
       }, property);
@@ -29258,7 +29347,8 @@ var require_block = __commonJS2({
     var {
       hasComment,
       CommentCheckFlags,
-      isNextLineEmpty
+      isNextLineEmpty,
+      numNextLineEmpty
     } = require_utils7();
     var {
       printHardlineAfterHeritage

@@ -74,7 +74,17 @@ function skip(chars) {
 function hasNewline(text, index, opts = {}) {
   const idx = skipSpaces(text, opts.backwards ? index - 1 : index, opts);
   const idx2 = skipNewline(text, idx, opts);
-  return idx !== idx2;
+  return idx !== idx2; 
+}
+
+function getNewlineIdx(text, index, opts = {}) {
+  const idx = skipSpaces(text, opts.backwards ? index - 1 : index, opts);
+  const idx2 = skipNewline(text, idx, opts);
+  if (idx !== idx2) {
+    return idx2;
+  } else {
+    return -1;
+  }
 }
 
 /**
@@ -109,6 +119,33 @@ function isPreviousLineEmpty(text, node, locStart) {
   return idx !== idx2;
 }
 
+// Note: this function doesn't ignore leading comments unlike isNextLineEmpty
+/**
+ * @template N
+ * @param {string} text
+ * @param {N} node
+ * @param {(node: N) => number} locStart
+ */
+//computation for number of blank lines before a specific line
+function numPreviousLineEmpty(text, node, locStart) {
+  let numBlankLinesPrev = 0;
+
+  /** @type {number | false} */
+  let idx = locStart(node) - 1;   
+  idx = skipSpaces(text, idx, { backwards: true });
+  idx = skipNewline(text, idx, { backwards: true });
+  idx = skipSpaces(text, idx, { backwards: true });
+  let idx2 = skipNewline(text, idx, { backwards: true });
+  
+  while(idx !== false && idx !== idx2) {
+    idx = skipSpaces(text, idx2, { backwards: true });
+    idx2 = skipNewline(text, idx, { backwards: true });
+    numBlankLinesPrev++;
+  }
+  
+  return numBlankLinesPrev;
+}
+
 /**
  * @param {string} text
  * @param {number} index
@@ -129,6 +166,38 @@ function isNextLineEmptyAfterIndex(text, index) {
   idx = skipTrailingComment(text, idx);
   idx = skipNewline(text, idx);
   return idx !== false && hasNewline(text, idx);
+}
+
+/**
+ * @param {string} text
+ * @param {number} index
+ * @returns {number}
+ */
+//computation for number of blank lines after a specific line
+function numNextLineEmptyAfterIndex(text, index) {
+  let numBlankLinesAfter = 0;
+
+  /** @type {number | false} */
+  let oldIdx = null;
+  /** @type {number | false} */
+  let idx = index;
+  while (idx !== oldIdx) {
+    // We need to skip all the potential trailing inline comments
+    oldIdx = idx;
+    idx = skipToLineEnd(text, idx);
+    idx = skipInlineComment(text, idx);
+    idx = skipSpaces(text, idx);
+  }
+  idx = skipTrailingComment(text, idx);
+  idx = skipNewline(text, idx);
+
+  while(idx !== false && hasNewline(text, idx)) {
+    idx = skipSpaces(text, idx);
+    idx = skipNewline(text, idx);
+    numBlankLinesAfter++;
+  }
+
+  return numBlankLinesAfter;
 }
 
 /**
@@ -500,8 +569,10 @@ module.exports = {
   skipTrailingComment,
   skipNewline,
   isNextLineEmptyAfterIndex,
+  numNextLineEmptyAfterIndex,
   isNextLineEmpty,
   isPreviousLineEmpty,
+  numPreviousLineEmpty,
   hasNewline,
   hasNewlineInRange,
   hasSpaces,
