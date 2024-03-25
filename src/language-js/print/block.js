@@ -22,7 +22,8 @@ function printBlock(path, options, print) {
   const parts = [];
 
   const { kind } = path.getParentNode();
-  const gettersetter = (options.getSetOneLine && (kind === "get" || kind === "set"));
+  const parent = path.getParentNode();
+  const gettersetter = (options.getSetOneLine && (kind === "get" || kind === "set")) && node.body.length === 1 && parent.end - parent.start <= options.printWidth;
 
   if (node.type === "StaticBlock") {
     parts.push("static ");
@@ -39,7 +40,7 @@ function printBlock(path, options, print) {
 
   parts.push("{");
 
-  if (isNonEmptyArray(node.body) && options.multiEmptyLine) {
+  if (isNonEmptyArray(node.body) && options.multiEmptyLine && !gettersetter) {
     const blockStartingLine = node.loc.start.line;
     const statementStartingLine = node.body[0].loc.start.line;
 
@@ -89,7 +90,7 @@ function printBlock(path, options, print) {
     }
   }
 
-  if (isNonEmptyArray(node.body) && options.multiEmptyLine) {
+  if (isNonEmptyArray(node.body) && options.multiEmptyLine && !gettersetter) {
     const blockEndingLine = node.loc.end.line;
     const bodyCount = node.body.length;
     const lastBody = node.body[bodyCount - 1];
