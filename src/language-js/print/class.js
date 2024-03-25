@@ -27,10 +27,6 @@ function printClass(path, options, print) {
   const node = path.getValue();
   const parts = [];
 
-  if (options.classMemberOrder != "none") {
-    reorderClassVariables(path, options);
-  }
-
   if (node.declare) {
     parts.push("declare ");
   }
@@ -99,31 +95,6 @@ function printClass(path, options, print) {
   parts.push(" ", print("body"));
 
   return parts;
-}
-
-function reorderClassVariables(path, options){
-  const nodeMembers = path.getValue().body.body;
-  const firstMembers = [];
-  const nextMembers = [];
-  let first_type = false;
-
-  if (options.classMemberOrder === "private first") {
-    first_type = true;
-  }
-  
-  for (let index in nodeMembers) {
-    const member = nodeMembers[index];
-    const { type } = member;
-    if (type.includes("Private") == first_type) { firstMembers.push(member); }
-    else { nextMembers.push(member); }
-  }
-
-  const sortedMembers = firstMembers.concat(nextMembers);
-
-  for (let ii in sortedMembers) {
-    path.getValue().body.body[ii] = sortedMembers[ii];
-  }
-
 }
 
 const getHeritageGroupId = createGroupIdMapper("heritageGroup");
