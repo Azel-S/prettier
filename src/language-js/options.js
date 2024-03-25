@@ -6,6 +6,13 @@ const CATEGORY_JAVASCRIPT = "JavaScript";
 
 // format based on https://github.com/prettier/prettier/blob/main/src/main/core-options.js
 module.exports = {
+  matrixArray: {
+    since: "1.0.0",
+    category: CATEGORY_JAVASCRIPT,
+    type: "boolean",
+    default: true,
+    description: "Preserves arrays that resemble a matrix.",
+  },
   forceObjectBreak: {
     since: "1.0.0",
     category: CATEGORY_JAVASCRIPT,
@@ -70,6 +77,12 @@ module.exports = {
     category: CATEGORY_JAVASCRIPT,
     type: "boolean",
     description: "allow empty multi-line at the start and the end of blocks."
+  },
+  retainBlankLines :{
+    since: "0.0.0",
+    category: CATEGORY_JAVASCRIPT,
+    type: "boolean",
+    description: "keeps multiple blank lines instead of collapsing into a single blank line"
   },
   jsxBracketSameLine: {
     since: "0.17.0",

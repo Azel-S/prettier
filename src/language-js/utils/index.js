@@ -7,6 +7,7 @@ const {
   skipWhitespace,
   isNonEmptyArray,
   isNextLineEmptyAfterIndex,
+  numNextLineEmptyAfterIndex,
   getStringWidth,
 } = require("../../common/util.js");
 const { locStart, locEnd, hasSameLocStart } = require("../loc.js");
@@ -1257,6 +1258,10 @@ function getComments(node, flags, fn) {
 const isNextLineEmpty = (node, { originalText }) =>
   isNextLineEmptyAfterIndex(originalText, locEnd(node));
 
+
+const numNextLineEmpty = (node, { originalText }) =>
+  numNextLineEmptyAfterIndex(originalText, locEnd(node));
+
 function isCallLikeExpression(node) {
   return (
     isCallExpression(node) ||
@@ -1343,6 +1348,7 @@ module.exports = {
   isTSXFile,
   isTypeAnnotationAFunction,
   isNextLineEmpty,
+  numNextLineEmpty,
   needsHardlineAfterDanglingComment,
   rawText,
   shouldPrintComma,
