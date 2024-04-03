@@ -254,25 +254,6 @@ exports[`show detailed usage with --help find-config-path (stdout) 1`] = `
 
 exports[`show detailed usage with --help find-config-path (write) 1`] = `[]`;
 
-exports[`show detailed usage with --help force-object-break (stderr) 1`] = `""`;
-
-exports[`show detailed usage with --help force-object-break (stdout) 1`] = `
-"--force-object-break <preserve|forceSingleLine|forceMultiLine>
-
-  Controls line breaks in object literals
-
-Valid options:
-
-  preserve          Prettier's original behavior, which chooses between one-line and multi-line based on the presense of a new line after the opening '{'.
-  forceSingleLine   Objects literals will always be formated to a single line.
-  forceMultiLine    Object literals will always be formatted to multiple lines, where possible.
-
-Default: preserve
-"
-`;
-
-exports[`show detailed usage with --help force-object-break (write) 1`] = `[]`;
-
 exports[`show detailed usage with --help help (stderr) 1`] = `""`;
 
 exports[`show detailed usage with --help help (stdout) 1`] = `
@@ -385,19 +366,6 @@ Default: log
 `;
 
 exports[`show detailed usage with --help loglevel (write) 1`] = `[]`;
-
-exports[`show detailed usage with --help matrix-array (stderr) 1`] = `""`;
-
-exports[`show detailed usage with --help matrix-array (stdout) 1`] = `
-"--matrix-array
-
-  Preserves arrays that resemble a matrix.
-
-Default: true
-"
-`;
-
-exports[`show detailed usage with --help matrix-array (write) 1`] = `[]`;
 
 exports[`show detailed usage with --help multi-empty-line (stderr) 1`] = `""`;
 
@@ -646,30 +614,6 @@ Default: false
 `;
 
 exports[`show detailed usage with --help require-pragma (write) 1`] = `[]`;
-
-exports[`show detailed usage with --help retain-blank-lines (stderr) 1`] = `""`;
-
-exports[`show detailed usage with --help retain-blank-lines (stdout) 1`] = `
-"--retain-blank-lines
-
-  keeps multiple blank lines instead of collapsing into a single blank line
-"
-`;
-
-exports[`show detailed usage with --help retain-blank-lines (write) 1`] = `[]`;
-
-exports[`show detailed usage with --help selectors-same-line (stderr) 1`] = `""`;
-
-exports[`show detailed usage with --help selectors-same-line (stdout) 1`] = `
-"--selectors-same-line
-
-  allow multiple css selectors to be on the same line
-
-Default: false
-"
-`;
-
-exports[`show detailed usage with --help selectors-same-line (write) 1`] = `[]`;
 
 exports[`show detailed usage with --help semi (stderr) 1`] = `""`;
 

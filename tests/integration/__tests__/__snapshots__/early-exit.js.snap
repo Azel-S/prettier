@@ -58,33 +58,23 @@ Output options:
 
 Format options:
 
-  --allman-style           Puts the '{' on a new line.
-                           Defaults to false.
   --arrow-parens <always|avoid>
                            Include parentheses around a sole arrow function parameter.
                            Defaults to always.
   --bracket-same-line      Put > of opening tags on the last line instead of on a new line.
                            Defaults to false.
   --no-bracket-spacing     Do not print spaces between brackets.
-  --else-statement-new-line
-                           puts else statement on a new line instead of on the same line as if statement right bracket.
   --embedded-language-formatting <auto|off>
                            Control how Prettier formats quoted code embedded in the file.
                            Defaults to auto.
   --end-of-line <lf|crlf|cr|auto>
                            Which end of line characters to apply.
                            Defaults to lf.
-  --force-object-break <preserve|forceSingleLine|forceMultiLine>
-                           Controls line breaks in object literals
-                           Defaults to preserve.
   --html-whitespace-sensitivity <css|strict|ignore>
                            How to handle whitespaces in HTML.
                            Defaults to css.
   --jsx-single-quote       Use single quotes in JSX.
                            Defaults to false.
-  --matrix-array           Preserves arrays that resemble a matrix.
-                           Defaults to true.
-  --multi-empty-line       allow empty multi-line at the start and the end of blocks.
   --parser <flow|babel|babel-flow|babel-ts|typescript|acorn|espree|meriyah|css|less|scss|json|json5|json-stringify|graphql|markdown|mdx|vue|yaml|glimmer|html|angular|lwc>
                            Which parser to use.
   --print-width <int>      The line length where Prettier will try wrap.
@@ -95,9 +85,6 @@ Format options:
   --quote-props <as-needed|consistent|preserve>
                            Change when properties in objects are quoted.
                            Defaults to as-needed.
-  --retain-blank-lines     keeps multiple blank lines instead of collapsing into a single blank line
-  --selectors-same-line    allow multiple css selectors to be on the same line
-                           Defaults to false.
   --no-semi                Do not print semicolons, except at the beginning of lines which may need them.
   --single-attribute-per-line
                            Enforce single attribute per line in HTML, Vue and JSX.
@@ -246,33 +233,23 @@ Output options:
 
 Format options:
 
-  --allman-style           Puts the '{' on a new line.
-                           Defaults to false.
   --arrow-parens <always|avoid>
                            Include parentheses around a sole arrow function parameter.
                            Defaults to always.
   --bracket-same-line      Put > of opening tags on the last line instead of on a new line.
                            Defaults to false.
   --no-bracket-spacing     Do not print spaces between brackets.
-  --else-statement-new-line
-                           puts else statement on a new line instead of on the same line as if statement right bracket.
   --embedded-language-formatting <auto|off>
                            Control how Prettier formats quoted code embedded in the file.
                            Defaults to auto.
   --end-of-line <lf|crlf|cr|auto>
                            Which end of line characters to apply.
                            Defaults to lf.
-  --force-object-break <preserve|forceSingleLine|forceMultiLine>
-                           Controls line breaks in object literals
-                           Defaults to preserve.
   --html-whitespace-sensitivity <css|strict|ignore>
                            How to handle whitespaces in HTML.
                            Defaults to css.
   --jsx-single-quote       Use single quotes in JSX.
                            Defaults to false.
-  --matrix-array           Preserves arrays that resemble a matrix.
-                           Defaults to true.
-  --multi-empty-line       allow empty multi-line at the start and the end of blocks.
   --parser <flow|babel|babel-flow|babel-ts|typescript|acorn|espree|meriyah|css|less|scss|json|json5|json-stringify|graphql|markdown|mdx|vue|yaml|glimmer|html|angular|lwc>
                            Which parser to use.
   --print-width <int>      The line length where Prettier will try wrap.
@@ -283,9 +260,6 @@ Format options:
   --quote-props <as-needed|consistent|preserve>
                            Change when properties in objects are quoted.
                            Defaults to as-needed.
-  --retain-blank-lines     keeps multiple blank lines instead of collapsing into a single blank line
-  --selectors-same-line    allow multiple css selectors to be on the same line
-                           Defaults to false.
   --no-semi                Do not print semicolons, except at the beginning of lines which may need them.
   --single-attribute-per-line
                            Enforce single attribute per line in HTML, Vue and JSX.
