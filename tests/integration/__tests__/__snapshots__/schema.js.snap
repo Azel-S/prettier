@@ -6,6 +6,11 @@ exports[`schema 1`] = `
   "definitions": {
     "optionsDefinition": {
       "properties": {
+        "allmanStyle": {
+          "default": false,
+          "description": "Puts the '{' on a new line.",
+          "type": "boolean",
+        },
         "arrowParens": {
           "default": "always",
           "description": "Include parentheses around a sole arrow function parameter.",
@@ -39,6 +44,11 @@ exports[`schema 1`] = `
           "description": "Print (to stderr) where a cursor at the given position would move to after formatting.
 This option cannot be used with --range-start and --range-end.",
           "type": "integer",
+        },
+        "elseStatementNewLine": {
+          "default": undefined,
+          "description": "puts else statement on a new line instead of on the same line as if statement right bracket.",
+          "type": "boolean",
         },
         "embeddedLanguageFormatting": {
           "default": "auto",
@@ -94,6 +104,30 @@ This option cannot be used with --range-start and --range-end.",
           "description": "Specify the input filepath. This will be used to do parser inference.",
           "type": "string",
         },
+        "forceObjectBreak": {
+          "default": "preserve",
+          "description": "Controls line breaks in object literals",
+          "oneOf": [
+            {
+              "description": "Prettier's original behavior, which chooses between one-line and multi-line based on the presense of a new line after the opening '{'.",
+              "enum": [
+                "preserve",
+              ],
+            },
+            {
+              "description": "Objects literals will always be formated to a single line.",
+              "enum": [
+                "forceSingleLine",
+              ],
+            },
+            {
+              "description": "Object literals will always be formatted to multiple lines, where possible.",
+              "enum": [
+                "forceMultiLine",
+              ],
+            },
+          ],
+        },
         "htmlWhitespaceSensitivity": {
           "default": "css",
           "description": "How to handle whitespaces in HTML.",
@@ -126,6 +160,16 @@ This option cannot be used with --range-start and --range-end.",
         "jsxSingleQuote": {
           "default": false,
           "description": "Use single quotes in JSX.",
+          "type": "boolean",
+        },
+        "matrixArray": {
+          "default": true,
+          "description": "Preserves arrays that resemble a matrix.",
+          "type": "boolean",
+        },
+        "multiEmptyLine": {
+          "default": undefined,
+          "description": "allow empty multi-line at the start and the end of blocks.",
           "type": "boolean",
         },
         "parser": {
@@ -375,6 +419,16 @@ This option cannot be used with --cursor-offset.",
           "default": false,
           "description": "Require either '@prettier' or '@format' to be present in the file's first docblock comment
 in order for it to be formatted.",
+          "type": "boolean",
+        },
+        "retainBlankLines": {
+          "default": undefined,
+          "description": "keeps multiple blank lines instead of collapsing into a single blank line",
+          "type": "boolean",
+        },
+        "selectorsSameLine": {
+          "default": false,
+          "description": "allow multiple css selectors to be on the same line",
           "type": "boolean",
         },
         "semi": {

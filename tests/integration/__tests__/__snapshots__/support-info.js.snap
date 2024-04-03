@@ -87,6 +87,10 @@ exports[`API getSupportInfo() 1`] = `
     ],
   },
   "options": {
+    "allmanStyle": {
+      "default": false,
+      "type": "boolean",
+    },
     "arrowParens": {
       "choices": [
         "always",
@@ -112,6 +116,10 @@ exports[`API getSupportInfo() 1`] = `
       },
       "type": "int",
     },
+    "elseStatementNewLine": {
+      "default": undefined,
+      "type": "boolean",
+    },
     "embeddedLanguageFormatting": {
       "choices": [
         "auto",
@@ -134,6 +142,15 @@ exports[`API getSupportInfo() 1`] = `
       "default": undefined,
       "type": "path",
     },
+    "forceObjectBreak": {
+      "choices": [
+        "preserve",
+        "forceSingleLine",
+        "forceMultiLine",
+      ],
+      "default": "preserve",
+      "type": "choice",
+    },
     "htmlWhitespaceSensitivity": {
       "choices": [
         "css",
@@ -149,6 +166,14 @@ exports[`API getSupportInfo() 1`] = `
     },
     "jsxSingleQuote": {
       "default": false,
+      "type": "boolean",
+    },
+    "matrixArray": {
+      "default": true,
+      "type": "boolean",
+    },
+    "multiEmptyLine": {
+      "default": undefined,
       "type": "boolean",
     },
     "parser": {
@@ -234,6 +259,14 @@ exports[`API getSupportInfo() 1`] = `
       "type": "int",
     },
     "requirePragma": {
+      "default": false,
+      "type": "boolean",
+    },
+    "retainBlankLines": {
+      "default": undefined,
+      "type": "boolean",
+    },
+    "selectorsSameLine": {
       "default": false,
       "type": "boolean",
     },
@@ -789,6 +822,15 @@ exports[`CLI --support-info (stdout) 1`] = `
   "options": [
     {
       "category": "JavaScript",
+      "default": false,
+      "description": "Puts the '{' on a new line.",
+      "name": "allmanStyle",
+      "pluginDefaults": {},
+      "since": "1.0.0",
+      "type": "boolean"
+    },
+    {
+      "category": "JavaScript",
       "choices": [
         {
           "description": "Always include parens. Example: \`(x) => x\`",
@@ -834,6 +876,14 @@ exports[`CLI --support-info (stdout) 1`] = `
       "range": { "end": null, "start": -1, "step": 1 },
       "since": "1.4.0",
       "type": "int"
+    },
+    {
+      "category": "JavaScript",
+      "description": "puts else statement on a new line instead of on the same line as if statement right bracket.",
+      "name": "elseStatementNewLine",
+      "pluginDefaults": {},
+      "since": "0.0.0",
+      "type": "boolean"
     },
     {
       "category": "Global",
@@ -890,6 +940,29 @@ exports[`CLI --support-info (stdout) 1`] = `
       "type": "path"
     },
     {
+      "category": "JavaScript",
+      "choices": [
+        {
+          "description": "Prettier's original behavior, which chooses between one-line and multi-line based on the presense of a new line after the opening '{'.",
+          "value": "preserve"
+        },
+        {
+          "description": "Objects literals will always be formated to a single line.",
+          "value": "forceSingleLine"
+        },
+        {
+          "description": "Object literals will always be formatted to multiple lines, where possible.",
+          "value": "forceMultiLine"
+        }
+      ],
+      "default": "preserve",
+      "description": "Controls line breaks in object literals",
+      "name": "forceObjectBreak",
+      "pluginDefaults": {},
+      "since": "1.0.0",
+      "type": "choice"
+    },
+    {
       "category": "HTML",
       "choices": [
         {
@@ -928,6 +1001,23 @@ exports[`CLI --support-info (stdout) 1`] = `
       "name": "jsxSingleQuote",
       "pluginDefaults": {},
       "since": "1.15.0",
+      "type": "boolean"
+    },
+    {
+      "category": "JavaScript",
+      "default": true,
+      "description": "Preserves arrays that resemble a matrix.",
+      "name": "matrixArray",
+      "pluginDefaults": {},
+      "since": "1.0.0",
+      "type": "boolean"
+    },
+    {
+      "category": "JavaScript",
+      "description": "allow empty multi-line at the start and the end of blocks.",
+      "name": "multiEmptyLine",
+      "pluginDefaults": {},
+      "since": "0.0.0",
       "type": "boolean"
     },
     {
@@ -1085,6 +1175,23 @@ exports[`CLI --support-info (stdout) 1`] = `
       "name": "requirePragma",
       "pluginDefaults": {},
       "since": "1.7.0",
+      "type": "boolean"
+    },
+    {
+      "category": "JavaScript",
+      "description": "keeps multiple blank lines instead of collapsing into a single blank line",
+      "name": "retainBlankLines",
+      "pluginDefaults": {},
+      "since": "0.0.0",
+      "type": "boolean"
+    },
+    {
+      "category": "css",
+      "default": false,
+      "description": "allow multiple css selectors to be on the same line",
+      "name": "selectorsSameLine",
+      "pluginDefaults": {},
+      "since": "1.0.0",
       "type": "boolean"
     },
     {

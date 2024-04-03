@@ -61,7 +61,7 @@ exports[`show external options with \`--help\` 1`] = `
 - First value
 + Second value
 
-@@ -22,16 +22,18 @@
+@@ -26,10 +26,12 @@
                              Control how Prettier formats quoted code embedded in the file.
                              Defaults to auto.
     --end-of-line <lf|crlf|cr|auto>
@@ -69,11 +69,17 @@ exports[`show external options with \`--help\` 1`] = `
                              Defaults to lf.
 +   --foo-option <bar|baz>   foo description
 +                            Defaults to bar.
+    --force-object-break <preserve|forceSingleLine|forceMultiLine>
+                             Controls line breaks in object literals
+                             Defaults to preserve.
     --html-whitespace-sensitivity <css|strict|ignore>
                              How to handle whitespaces in HTML.
-                             Defaults to css.
+@@ -37,11 +39,11 @@
     --jsx-single-quote       Use single quotes in JSX.
                              Defaults to false.
+    --matrix-array           Preserves arrays that resemble a matrix.
+                             Defaults to true.
+    --multi-empty-line       allow empty multi-line at the start and the end of blocks.
 -   --parser <flow|babel|babel-flow|babel-ts|typescript|acorn|espree|meriyah|css|less|scss|json|json5|json-stringify|graphql|markdown|mdx|vue|yaml|glimmer|html|angular|lwc>
 +   --parser <flow|babel|babel-flow|babel-ts|typescript|acorn|espree|meriyah|css|less|scss|json|json5|json-stringify|graphql|markdown|mdx|vue|yaml|glimmer|html|angular|lwc|foo-parser>
                              Which parser to use.
