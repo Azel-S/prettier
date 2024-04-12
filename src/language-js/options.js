@@ -10,7 +10,7 @@ module.exports = {
     since: "1.0.0",
     category: CATEGORY_JAVASCRIPT,
     type: "boolean",
-    default: true,
+    default: false,
     description: "Preserves arrays that resemble a matrix.",
   },
   forceObjectBreak: {
