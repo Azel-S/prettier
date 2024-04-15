@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`multiEmptyLine.ts - {"retainBlankLines":false} format 1`] = `
+====================================options=====================================
+parsers: ["babel", "flow", "typescript"]
+printWidth: 80
+retainBlankLines: false
+                                                                                | printWidth
+=====================================input======================================
+function add(x, y) {
+
+
+    //comment
+    
+
+    return x + y;
+
+    //comment
+
+
+
+  }
+=====================================output=====================================
+function add(x, y) {
+  //comment
+
+  return x + y;
+
+  //comment
+}
+
+================================================================================
+`;
+
+exports[`multiEmptyLine.ts - {"retainBlankLines":true} format 1`] = `
+====================================options=====================================
+parsers: ["babel", "flow", "typescript"]
+printWidth: 80
+retainBlankLines: true
+                                                                                | printWidth
+=====================================input======================================
+function add(x, y) {
+
+
+    //comment
+    
+
+    return x + y;
+
+    //comment
+
+
+
+  }
+=====================================output=====================================
+function add(x, y) {
+  //comment
+
+
+  return x + y;
+
+  //comment
+}
+
+================================================================================
+`;
