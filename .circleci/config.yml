@@ -6,9 +6,6 @@ jobs:
     executor: node/default
     steps:
       - checkout
-      - run:
-          command: rm yarn.lock
-          name: fix yarn?
       - node/install-packages:
           pkg-manager: yarn
       - run:
