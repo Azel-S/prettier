@@ -1,0 +1,108 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`classMemberOrder.js - {"classMemberOrder":"none"} format 1`] = `
+====================================options=====================================
+classMemberOrder: "none"
+parsers: ["babel", "flow", "typescript"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+class TestClass {
+    publicFieldFirst = 'Public field first'; // Public field
+    #privateField = 'Private Field'; // Simulated private field using naming convention
+    publicFieldLast = 'Public field last'; // Public field
+    #privateFieldLast = 'Private Field Last'; // Simulated private field
+
+    constructor() {
+        this.publicFieldConstructor = 'Public field set in constructor';
+        this._privateFieldConstructor = 'Private field set in constructor';
+        console.log('Constructor');
+    }
+}
+=====================================output=====================================
+class TestClass {
+  publicFieldFirst = "Public field first"; // Public field
+  #privateField = "Private Field"; // Simulated private field using naming convention
+  publicFieldLast = "Public field last"; // Public field
+  #privateFieldLast = "Private Field Last"; // Simulated private field
+
+  constructor() {
+    this.publicFieldConstructor = "Public field set in constructor";
+    this._privateFieldConstructor = "Private field set in constructor";
+    console.log("Constructor");
+  }
+}
+
+================================================================================
+`;
+
+exports[`classMemberOrder.js - {"classMemberOrder":"private first"} format 1`] = `
+====================================options=====================================
+classMemberOrder: "private first"
+parsers: ["babel", "flow", "typescript"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+class TestClass {
+    publicFieldFirst = 'Public field first'; // Public field
+    #privateField = 'Private Field'; // Simulated private field using naming convention
+    publicFieldLast = 'Public field last'; // Public field
+    #privateFieldLast = 'Private Field Last'; // Simulated private field
+
+    constructor() {
+        this.publicFieldConstructor = 'Public field set in constructor';
+        this._privateFieldConstructor = 'Private field set in constructor';
+        console.log('Constructor');
+    }
+}
+=====================================output=====================================
+class TestClass {
+  #privateField = "Private Field"; // Simulated private field using naming convention
+  #privateFieldLast = "Private Field Last"; // Simulated private field
+
+  publicFieldFirst = "Public field first"; // Public field
+  publicFieldLast = "Public field last"; // Public field
+  constructor() {
+    this.publicFieldConstructor = "Public field set in constructor";
+    this._privateFieldConstructor = "Private field set in constructor";
+    console.log("Constructor");
+  }
+}
+
+================================================================================
+`;
+
+exports[`classMemberOrder.js - {"classMemberOrder":"public first"} format 1`] = `
+====================================options=====================================
+classMemberOrder: "public first"
+parsers: ["babel", "flow", "typescript"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+class TestClass {
+    publicFieldFirst = 'Public field first'; // Public field
+    #privateField = 'Private Field'; // Simulated private field using naming convention
+    publicFieldLast = 'Public field last'; // Public field
+    #privateFieldLast = 'Private Field Last'; // Simulated private field
+
+    constructor() {
+        this.publicFieldConstructor = 'Public field set in constructor';
+        this._privateFieldConstructor = 'Private field set in constructor';
+        console.log('Constructor');
+    }
+}
+=====================================output=====================================
+class TestClass {
+  publicFieldFirst = "Public field first"; // Public field
+  publicFieldLast = "Public field last"; // Public field
+  constructor() {
+    this.publicFieldConstructor = "Public field set in constructor";
+    this._privateFieldConstructor = "Private field set in constructor";
+    console.log("Constructor");
+  }
+  #privateField = "Private Field"; // Simulated private field using naming convention
+  #privateFieldLast = "Private Field Last"; // Simulated private field
+}
+
+================================================================================
+`;
