@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`forceObjectBreak.ts - {"forceObjectBreak":"forceMultiLine"} format 1`] = `
+====================================options=====================================
+forceObjectBreak: "forceMultiLine"
+parsers: ["babel", "flow", "typescript"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+const obj = { foo: 1, bar: 2};
+
+=====================================output=====================================
+const obj = {
+  foo: 1,
+  bar: 2,
+};
+
+================================================================================
+`;
+
+exports[`forceObjectBreak.ts - {"forceObjectBreak":"forceSingleLine"} format 1`] = `
+====================================options=====================================
+forceObjectBreak: "forceSingleLine"
+parsers: ["babel", "flow", "typescript"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+const obj = { foo: 1, bar: 2};
+
+=====================================output=====================================
+const obj = { foo: 1, bar: 2 };
+
+================================================================================
+`;
+
+exports[`forceObjectBreak.ts - {"forceObjectBreak":"preserve"} format 1`] = `
+====================================options=====================================
+forceObjectBreak: "preserve"
+parsers: ["babel", "flow", "typescript"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+const obj = { foo: 1, bar: 2};
+
+=====================================output=====================================
+const obj = { foo: 1, bar: 2 };
+
+================================================================================
+`;
