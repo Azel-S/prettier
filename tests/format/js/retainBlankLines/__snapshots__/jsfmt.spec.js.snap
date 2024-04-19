@@ -1,0 +1,149 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`retainBlankLines.ts - {"retainBlankLines":false} format 1`] = `
+====================================options=====================================
+parsers: ["babel", "flow", "typescript"]
+printWidth: 80
+retainBlankLines: false
+                                                                                | printWidth
+=====================================input======================================
+// a comment
+
+// another comment
+
+
+let thisNumber = 5;
+let thisOtherNumber = 2;
+
+// wow, another another comment
+
+
+if ("a" === "A".toLowerCase()) {
+    
+    let thisBeNextTo = "the brackets!"
+
+
+
+
+
+}
+
+
+let thisString = "be below the others";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let thisOtherString = "be even lower!";
+=====================================output=====================================
+// a comment
+
+// another comment
+
+let thisNumber = 5;
+let thisOtherNumber = 2;
+
+// wow, another another comment
+
+if ("a" === "A".toLowerCase()) {
+  let thisBeNextTo = "the brackets!";
+}
+
+let thisString = "be below the others";
+
+let thisOtherString = "be even lower!";
+
+================================================================================
+`;
+
+exports[`retainBlankLines.ts - {"retainBlankLines":true} format 1`] = `
+====================================options=====================================
+parsers: ["babel", "flow", "typescript"]
+printWidth: 80
+retainBlankLines: true
+                                                                                | printWidth
+=====================================input======================================
+// a comment
+
+// another comment
+
+
+let thisNumber = 5;
+let thisOtherNumber = 2;
+
+// wow, another another comment
+
+
+if ("a" === "A".toLowerCase()) {
+    
+    let thisBeNextTo = "the brackets!"
+
+
+
+
+
+}
+
+
+let thisString = "be below the others";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let thisOtherString = "be even lower!";
+=====================================output=====================================
+// a comment
+
+// another comment
+
+
+let thisNumber = 5;
+let thisOtherNumber = 2;
+
+// wow, another another comment
+
+
+if ("a" === "A".toLowerCase()) {
+  let thisBeNextTo = "the brackets!";
+}
+
+
+let thisString = "be below the others";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let thisOtherString = "be even lower!";
+
+================================================================================
+`;
