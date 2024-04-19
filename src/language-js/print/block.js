@@ -20,7 +20,7 @@ const { printBody } = require("./statement.js");
 function printBlock(path, options, print) {
   const node = path.getValue();
   const parts = [];
-  const reorderClassMembers = (options.reorderClassMembers !== "none" && node.type === "ClassBody");
+  const reorderClassMembers = (options.classMemberOrder !== "none" && node.type === "ClassBody");
   const { kind } = path.getParentNode();
   const parent = path.getParentNode();
   const gettersetter = (options.getSetOneLine && (kind === "get" || kind === "set")) && node.body.length === 1 && parent.end - parent.start <= options.printWidth;
