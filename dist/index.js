@@ -29292,7 +29292,7 @@ var require_block = __commonJS2({
     function printBlock(path, options, print) {
       const node = path.getValue();
       const parts = [];
-      const reorderClassMembers = options.reorderClassMembers !== "none" && node.type === "ClassBody";
+      const reorderClassMembers = options.classMemberOrder !== "none" && node.type === "ClassBody";
       const {
         kind
       } = path.getParentNode();
