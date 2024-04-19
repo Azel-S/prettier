@@ -29292,6 +29292,7 @@ var require_block = __commonJS2({
     function printBlock(path, options, print) {
       const node = path.getValue();
       const parts = [];
+      const reorderClassMembers = options.reorderClassMembers !== "none" && node.type === "ClassBody";
       const {
         kind
       } = path.getParentNode();
@@ -29308,7 +29309,10 @@ var require_block = __commonJS2({
         parts.push(hardline);
       }
       parts.push("{");
-      if (isNonEmptyArray(node.body) && options.multiEmptyLine && !gettersetter) {
+      if (reorderClassMembers) {
+        reorderClassVariables(path, options);
+      }
+      if (isNonEmptyArray(node.body) && options.multiEmptyLine && !gettersetter && !reorderClassMembers) {
         const blockStartingLine = node.loc.start.line;
         const statementStartingLine = node.body[0].loc.start.line;
         if (hasComment(node.body[0]) && node.body[0].comments[0].loc.start.line < statementStartingLine) {
@@ -29334,7 +29338,7 @@ var require_block = __commonJS2({
           parts.push(hardline);
         }
       }
-      if (isNonEmptyArray(node.body) && options.multiEmptyLine && !gettersetter) {
+      if (isNonEmptyArray(node.body) && options.multiEmptyLine && !gettersetter && !reorderClassMembers) {
         const blockEndingLine = node.loc.end.line;
         const bodyCount = node.body.length;
         const lastBody = node.body[bodyCount - 1];
@@ -29357,6 +29361,30 @@ var require_block = __commonJS2({
       }
       parts.push("}");
       return parts;
+    }
+    function reorderClassVariables(path, options) {
+      const nodeMembers = path.getValue().body;
+      const firstMembers = [];
+      const nextMembers = [];
+      let first_type = false;
+      if (options.classMemberOrder === "private first") {
+        first_type = true;
+      }
+      for (let index in nodeMembers) {
+        const member = nodeMembers[index];
+        const {
+          type
+        } = member;
+        if (type.includes("Private") == first_type) {
+          firstMembers.push(member);
+        } else {
+          nextMembers.push(member);
+        }
+      }
+      const sortedMembers = firstMembers.concat(nextMembers);
+      for (let ii in sortedMembers) {
+        path.getValue().body[ii] = sortedMembers[ii];
+      }
     }
     function printBlockBody(path, options, print) {
       const node = path.getValue();
