@@ -1,0 +1,119 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getSetOneLine.js - {"getSetOneLine":false} format 1`] = `
+====================================options=====================================
+getSetOneLine: false
+parsers: ["babel", "flow", "javascript"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+const objGet = {
+    get name() {
+      return this.name;
+    },
+  };
+
+const objGetTwo = {
+    get nameTwo() {
+        this.name = this.name + " is valid";
+        return this.name();
+    },
+}
+
+const objSet = {
+    set name(name) {
+      return this.name = name;
+    },
+};
+
+  const objSetTwo = {
+    get name() {
+      return this.name + "may not be valid in this context";
+    },
+};
+  
+
+=====================================output=====================================
+const objGet = {
+  get name() {
+    return this.name;
+  },
+};
+
+const objGetTwo = {
+  get nameTwo() {
+    this.name = this.name + " is valid";
+    return this.name();
+  },
+};
+
+const objSet = {
+  set name(name) {
+    return (this.name = name);
+  },
+};
+
+const objSetTwo = {
+  get name() {
+    return this.name + "may not be valid in this context";
+  },
+};
+
+================================================================================
+`;
+
+exports[`getSetOneLine.js - {"getSetOneLine":true} format 1`] = `
+====================================options=====================================
+getSetOneLine: true
+parsers: ["babel", "flow", "javascript"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+const objGet = {
+    get name() {
+      return this.name;
+    },
+  };
+
+const objGetTwo = {
+    get nameTwo() {
+        this.name = this.name + " is valid";
+        return this.name();
+    },
+}
+
+const objSet = {
+    set name(name) {
+      return this.name = name;
+    },
+};
+
+  const objSetTwo = {
+    get name() {
+      return this.name + "may not be valid in this context";
+    },
+};
+  
+
+=====================================output=====================================
+const objGet = {
+  get name() { return this.name; },
+};
+
+const objGetTwo = {
+  get nameTwo() {
+    this.name = this.name + " is valid";
+    return this.name();
+  },
+};
+
+const objSet = {
+  set name(name) { return (this.name = name); },
+};
+
+const objSetTwo = {
+  get name() { return this.name + "may not be valid in this context"; },
+};
+
+================================================================================
+`;
