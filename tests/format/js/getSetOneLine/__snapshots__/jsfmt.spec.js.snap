@@ -3,7 +3,7 @@
 exports[`getSetOneLine.js - {"getSetOneLine":false} format 1`] = `
 ====================================options=====================================
 getSetOneLine: false
-parsers: ["babel", "flow", "javascript"]
+parsers: ["babel", "flow", "typescript"]
 printWidth: 80
                                                                                 | printWidth
 =====================================input======================================
@@ -26,9 +26,9 @@ const objSet = {
     },
 };
 
-  const objSetTwo = {
-    get name() {
-      return this.name + "may not be valid in this context";
+const objSetTwo = {
+    set nameTwo(name) {
+      return this.name + "may not be valid in this context because it is going out of range for print";
     },
 };
   
@@ -54,8 +54,11 @@ const objSet = {
 };
 
 const objSetTwo = {
-  get name() {
-    return this.name + "may not be valid in this context";
+  set nameTwo(name) {
+    return (
+      this.name +
+      "may not be valid in this context because it is going out of range for print"
+    );
   },
 };
 
@@ -65,7 +68,7 @@ const objSetTwo = {
 exports[`getSetOneLine.js - {"getSetOneLine":true} format 1`] = `
 ====================================options=====================================
 getSetOneLine: true
-parsers: ["babel", "flow", "javascript"]
+parsers: ["babel", "flow", "typescript"]
 printWidth: 80
                                                                                 | printWidth
 =====================================input======================================
@@ -88,9 +91,9 @@ const objSet = {
     },
 };
 
-  const objSetTwo = {
-    get name() {
-      return this.name + "may not be valid in this context";
+const objSetTwo = {
+    set nameTwo(name) {
+      return this.name + "may not be valid in this context because it is going out of range for print";
     },
 };
   
@@ -112,7 +115,12 @@ const objSet = {
 };
 
 const objSetTwo = {
-  get name() { return this.name + "may not be valid in this context"; },
+  set nameTwo(name) {
+    return (
+      this.name +
+      "may not be valid in this context because it is going out of range for print"
+    );
+  },
 };
 
 ================================================================================

@@ -17,9 +17,9 @@ const objSet = {
     },
 };
 
-  const objSetTwo = {
-    get name() {
-      return this.name + "may not be valid in this context";
+const objSetTwo = {
+    set nameTwo(name) {
+      return this.name + "may not be valid in this context because it is going out of range for print";
     },
 };
   
