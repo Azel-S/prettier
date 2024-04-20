@@ -20,8 +20,10 @@ const { printBody } = require("./statement.js");
 function printBlock(path, options, print) {
   const node = path.getValue();
   const parts = [];
-
-  const reorderClassMembers = (options.reorderClassMembers != "none" && node.type == "ClassBody");
+  const reorderClassMembers = (options.classMemberOrder !== "none" && node.type === "ClassBody");
+  const { kind } = path.getParentNode();
+  const parent = path.getParentNode();
+  const gettersetter = (options.getSetOneLine && (kind === "get" || kind === "set")) && node.body.length === 1 && parent.end - parent.start <= options.printWidth;
 
   if (node.type === "StaticBlock") {
     parts.push("static ");
@@ -32,17 +34,17 @@ function printBlock(path, options, print) {
     parts.push(printHardlineAfterHeritage(parent));
   }
 
-  if (options.allmanStyle) {
+  if (options.allmanStyle && !gettersetter) {
     parts.push(hardline);
   }
 
   parts.push("{");
 
-  if (options.classMemberOrder != "none") {
+  if (reorderClassMembers) {
     reorderClassVariables(path, options);
   }
 
-  if (isNonEmptyArray(node.body) && options.multiEmptyLine && !reorderClassMembers) {
+  if (isNonEmptyArray(node.body) && options.multiEmptyLine && !gettersetter && !reorderClassMembers) {
     const blockStartingLine = node.loc.start.line;
     const statementStartingLine = node.body[0].loc.start.line;
 
@@ -62,8 +64,9 @@ function printBlock(path, options, print) {
   }
 
   const printed = printBlockBody(path, options, print);
-
-  if (printed) {
+  if (printed && gettersetter) {
+    parts.push(indent([" ", printed]), hardline);
+  } else if (printed) {
     parts.push(indent([hardline, printed]), hardline);
   } else {
     const parent = path.getParentNode();
@@ -91,7 +94,7 @@ function printBlock(path, options, print) {
     }
   }
 
-  if (isNonEmptyArray(node.body) && options.multiEmptyLine && !reorderClassMembers) {
+  if (isNonEmptyArray(node.body) && options.multiEmptyLine && !gettersetter && !reorderClassMembers) {
     const blockEndingLine = node.loc.end.line;
     const bodyCount = node.body.length;
     const lastBody = node.body[bodyCount - 1];
@@ -110,6 +113,11 @@ function printBlock(path, options, print) {
         parts.push(hardline);
       }  
     }
+  }
+
+  if (gettersetter) {
+    parts.pop();
+    parts.push(" ");
   }
 
   parts.push("}");
