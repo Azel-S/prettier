@@ -1,0 +1,211 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`multiEmptyLine.ts - {"multiEmptyLine":false} format 1`] = `
+====================================options=====================================
+multiEmptyLine: false
+parsers: ["babel", "flow", "typescript"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+function add(x, y) {
+
+
+    //comment
+    
+
+    return x + y;
+
+    //comment
+
+
+
+  }
+
+  function addTwo(x, y) {
+
+
+    //comment
+    
+
+    return x + y;
+
+   
+
+
+
+  }
+
+  function addThree(x, y) {
+
+
+    
+    
+
+    return x + y;
+
+    //comment
+
+
+
+  }
+
+  function addFour(x, y) {
+
+
+    
+    
+
+    return x + y;
+
+ 
+
+
+
+  }
+=====================================output=====================================
+function add(x, y) {
+  //comment
+
+  return x + y;
+
+  //comment
+}
+
+function addTwo(x, y) {
+  //comment
+
+  return x + y;
+}
+
+function addThree(x, y) {
+  return x + y;
+
+  //comment
+}
+
+function addFour(x, y) {
+  return x + y;
+}
+
+================================================================================
+`;
+
+exports[`multiEmptyLine.ts - {"multiEmptyLine":true} format 1`] = `
+====================================options=====================================
+multiEmptyLine: true
+parsers: ["babel", "flow", "typescript"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+function add(x, y) {
+
+
+    //comment
+    
+
+    return x + y;
+
+    //comment
+
+
+
+  }
+
+  function addTwo(x, y) {
+
+
+    //comment
+    
+
+    return x + y;
+
+   
+
+
+
+  }
+
+  function addThree(x, y) {
+
+
+    
+    
+
+    return x + y;
+
+    //comment
+
+
+
+  }
+
+  function addFour(x, y) {
+
+
+    
+    
+
+    return x + y;
+
+ 
+
+
+
+  }
+=====================================output=====================================
+function add(x, y) {
+
+
+  //comment
+
+  return x + y;
+
+  //comment
+
+
+
+}
+
+function addTwo(x, y) {
+
+
+  //comment
+
+  return x + y;
+
+
+
+
+
+}
+
+function addThree(x, y) {
+
+
+
+
+
+  return x + y;
+
+  //comment
+
+
+
+}
+
+function addFour(x, y) {
+
+
+
+
+
+  return x + y;
+
+
+
+
+
+}
+
+================================================================================
+`;
