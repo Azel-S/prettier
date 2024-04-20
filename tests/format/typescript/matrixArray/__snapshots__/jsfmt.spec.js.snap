@@ -1,0 +1,89 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matrixArray.ts - {"matrixArray":false} format 1`] = `
+====================================options=====================================
+matrixArray: false
+parsers: ["typescript"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+// Test file for array matrix formatting feature in TypeScript
+
+// Single line array of numbers
+const testArray9: number[] = [1, 2, 3, 4];
+
+// Multiline array of numbers, already formatted
+const testArray8: number[] = [
+    1, 2,
+    3, 4
+];
+
+// Multiline array of numbers, needs reformatting
+const testArray7: number[] = [
+    1, 2,
+3, 4 
+  // Intentionally misaligned for testing
+];
+=====================================output=====================================
+// Test file for array matrix formatting feature in TypeScript
+
+// Single line array of numbers
+const testArray9: number[] = [1, 2, 3, 4];
+
+// Multiline array of numbers, already formatted
+const testArray8: number[] = [1, 2, 3, 4];
+
+// Multiline array of numbers, needs reformatting
+const testArray7: number[] = [
+  1, 2, 3, 4,
+  // Intentionally misaligned for testing
+];
+
+================================================================================
+`;
+
+exports[`matrixArray.ts - {"matrixArray":true} format 1`] = `
+====================================options=====================================
+matrixArray: true
+parsers: ["typescript"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+// Test file for array matrix formatting feature in TypeScript
+
+// Single line array of numbers
+const testArray9: number[] = [1, 2, 3, 4];
+
+// Multiline array of numbers, already formatted
+const testArray8: number[] = [
+    1, 2,
+    3, 4
+];
+
+// Multiline array of numbers, needs reformatting
+const testArray7: number[] = [
+    1, 2,
+3, 4 
+  // Intentionally misaligned for testing
+];
+=====================================output=====================================
+// Test file for array matrix formatting feature in TypeScript
+
+// Single line array of numbers
+const testArray9: number[] = [1, 2, 3, 4];
+
+// Multiline array of numbers, already formatted
+const testArray8: number[] = [
+  1, 2,
+  3, 4,
+];
+
+// Multiline array of numbers, needs reformatting
+const testArray7: number[] = [
+  1, 2,
+  3, 4,
+  // Intentionally misaligned for testing
+];
+
+================================================================================
+`;
