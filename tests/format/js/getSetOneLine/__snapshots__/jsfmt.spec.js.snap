@@ -1,0 +1,143 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getSetOneLine.js - {"getSetOneLine":false} format 1`] = `
+====================================options=====================================
+getSetOneLine: false
+parsers: ["babel", "flow", "typescript"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+//when true, line in getter is placed on same line as get()
+const objGet = {
+    get name() {
+      return this.name;
+    },
+  };
+
+//when true, remains unchanged (exceeds print width range)
+const objGetTwo = {
+    get nameTwo() {
+        this.name = this.name + " is valid";
+        return this.name();
+    },
+}
+
+//when true, line in setter is placed on same line as set() 
+const objSet = {
+    set name(name) {
+      return this.name = name;
+    },
+};
+
+//when true, remains unchanged (exceeds print width range)
+const objSetTwo = {
+    set nameTwo(name) {
+      return this.name + "may not be valid in this context because it is going out of range for print";
+    },
+};
+  
+
+=====================================output=====================================
+//when true, line in getter is placed on same line as get()
+const objGet = {
+  get name() {
+    return this.name;
+  },
+};
+
+//when true, remains unchanged (exceeds print width range)
+const objGetTwo = {
+  get nameTwo() {
+    this.name = this.name + " is valid";
+    return this.name();
+  },
+};
+
+//when true, line in setter is placed on same line as set()
+const objSet = {
+  set name(name) {
+    return (this.name = name);
+  },
+};
+
+//when true, remains unchanged (exceeds print width range)
+const objSetTwo = {
+  set nameTwo(name) {
+    return (
+      this.name +
+      "may not be valid in this context because it is going out of range for print"
+    );
+  },
+};
+
+================================================================================
+`;
+
+exports[`getSetOneLine.js - {"getSetOneLine":true} format 1`] = `
+====================================options=====================================
+getSetOneLine: true
+parsers: ["babel", "flow", "typescript"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+//when true, line in getter is placed on same line as get()
+const objGet = {
+    get name() {
+      return this.name;
+    },
+  };
+
+//when true, remains unchanged (exceeds print width range)
+const objGetTwo = {
+    get nameTwo() {
+        this.name = this.name + " is valid";
+        return this.name();
+    },
+}
+
+//when true, line in setter is placed on same line as set() 
+const objSet = {
+    set name(name) {
+      return this.name = name;
+    },
+};
+
+//when true, remains unchanged (exceeds print width range)
+const objSetTwo = {
+    set nameTwo(name) {
+      return this.name + "may not be valid in this context because it is going out of range for print";
+    },
+};
+  
+
+=====================================output=====================================
+//when true, line in getter is placed on same line as get()
+const objGet = {
+  get name() { return this.name; },
+};
+
+//when true, remains unchanged (exceeds print width range)
+const objGetTwo = {
+  get nameTwo() {
+    this.name = this.name + " is valid";
+    return this.name();
+  },
+};
+
+//when true, line in setter is placed on same line as set()
+const objSet = {
+  set name(name) { return (this.name = name); },
+};
+
+//when true, remains unchanged (exceeds print width range)
+const objSetTwo = {
+  set nameTwo(name) {
+    return (
+      this.name +
+      "may not be valid in this context because it is going out of range for print"
+    );
+  },
+};
+
+================================================================================
+`;
