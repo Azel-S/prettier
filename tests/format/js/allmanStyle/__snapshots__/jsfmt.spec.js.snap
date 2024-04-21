@@ -1,0 +1,70 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`allmanStyle.js - {"allmanStyle":true} format 1`] = `
+====================================options=====================================
+allmanStyle: true
+parsers: ["babel", "flow", "typescript"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+if (true) { code; } 
+else { code; }
+
+
+if (cond) {
+    stuff;
+  } /* comment */ else if (cond) {
+    stuff;
+  }
+  // comment
+  else {
+    stuff;
+  }
+
+for (;;) {
+    code;
+    /* comment
+    comment c
+    comment 
+    */
+    if (cond) {
+        code;
+    }
+}
+=====================================output=====================================
+if (true)
+{
+  code;
+} else
+{
+  code;
+}
+
+if (cond)
+{
+  stuff;
+} /* comment */ else if (cond)
+{
+  stuff;
+}
+// comment
+else
+{
+  stuff;
+}
+
+for (;;)
+{
+  code;
+  /* comment
+    comment c
+    comment 
+    */
+  if (cond)
+  {
+    code;
+  }
+}
+
+================================================================================
+`;
