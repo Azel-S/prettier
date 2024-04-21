@@ -20,7 +20,7 @@ const { printBody } = require("./statement.js");
 function printBlock(path, options, print) {
   const node = path.getValue();
   const parts = [];
-
+  const reorderClassMembers = (options.classMemberOrder !== "none" && node.type === "ClassBody");
   const { kind } = path.getParentNode();
   const parent = path.getParentNode();
   const gettersetter = (options.getSetOneLine && (kind === "get" || kind === "set")) && node.body.length === 1 && parent.end - parent.start <= options.printWidth;
@@ -40,7 +40,11 @@ function printBlock(path, options, print) {
 
   parts.push("{");
 
-  if (isNonEmptyArray(node.body) && options.multiEmptyLine && !gettersetter) {
+  if (reorderClassMembers) {
+    reorderClassVariables(path, options);
+  }
+
+  if (isNonEmptyArray(node.body) && options.multiEmptyLine && !gettersetter && !reorderClassMembers) {
     const blockStartingLine = node.loc.start.line;
     const statementStartingLine = node.body[0].loc.start.line;
 
@@ -90,7 +94,7 @@ function printBlock(path, options, print) {
     }
   }
 
-  if (isNonEmptyArray(node.body) && options.multiEmptyLine && !gettersetter) {
+  if (isNonEmptyArray(node.body) && options.multiEmptyLine && !gettersetter && !reorderClassMembers) {
     const blockEndingLine = node.loc.end.line;
     const bodyCount = node.body.length;
     const lastBody = node.body[bodyCount - 1];
