@@ -129,7 +129,7 @@ function genericPrint(path, options, print) {
               node.selector.type === "selector-unknown" &&
               lastLineHasInlineComment(node.selector.value)
                 ? line
-                : " ",
+                : options.allmanStyle ? hardline : " ",
               "{",
               node.nodes.length > 0
                 ? indent([hardline, printNodeSequence(path, options, print)])
@@ -234,6 +234,7 @@ function genericPrint(path, options, print) {
             node.raws.between.trim() ? node.raws.between.trim() + " " : "",
             node.nodes
               ? [
+                  options.allmanStyle ? hardline : "",
                   "{",
                   indent([
                     node.nodes.length > 0 ? softline : "",
@@ -300,7 +301,7 @@ function genericPrint(path, options, print) {
                     typeof node.params === "string" &&
                     lastLineHasInlineComment(node.params))
                 ? line
-                : " ",
+                : options.allmanStyle ? hardline : " ",
               "{",
               indent([
                 node.nodes.length > 0 ? softline : "",
