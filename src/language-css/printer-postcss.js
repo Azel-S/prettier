@@ -187,7 +187,8 @@ function genericPrint(path, options, print) {
           : "",
         node.nodes
           ? [
-              " {",
+              options.allmanStyle ? hardline : " ",
+              "{",
               indent([softline, printNodeSequence(path, options, print)]),
               softline,
               "}",
