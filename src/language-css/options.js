@@ -13,5 +13,12 @@ module.exports = {
     type: "boolean",
     default: false,
     description: "allow multiple css selectors to be on the same line"
+  },
+  allmanStyle: {
+    since: "1.0.0",
+    category: CATEGORY_CSS,
+    type: "boolean",
+    default: false,
+    description: "Puts the '{' on a new line.",
   }
 };
