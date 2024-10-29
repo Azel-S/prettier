@@ -20,5 +20,11 @@ module.exports = {
     type: "boolean",
     default: false,
     description: "Puts the '{' on a new line.",
-  }
+  },
+  retainBlankLines :{
+    since: "0.0.0",
+    category: CATEGORY_CSS,
+    type: "boolean",
+    description: "keeps multiple blank lines instead of collapsing into a single blank line"
+  },
 };

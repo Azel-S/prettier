@@ -1085,6 +1085,28 @@ function genericPrint(path, options, print) {
   }
 }
 
+// Helper function to count the number of empty lines between nodes
+function getNumberOfEmptyLines(text, node, nextNode) {
+  const nodeEndIndex = locEnd(node);
+  const nextNodeStartIndex = locStart(nextNode);
+
+  const betweenText = text.slice(nodeEndIndex, nextNodeStartIndex);
+
+  // Split the text into lines
+  const lines = betweenText.split(/\r\n|[\n\r\u2028\u2029]/);
+
+  let emptyLines = 0;
+  for (const line of lines) {
+    if (line.trim() === "") {
+      emptyLines++;
+    }
+  }
+
+  return emptyLines;
+}
+
+
+
 function printNodeSequence(path, options, print) {
   const parts = [];
   path.each((pathChild, i, nodes) => {
@@ -1103,24 +1125,42 @@ function printNodeSequence(path, options, print) {
     }
 
     if (i !== nodes.length - 1) {
+      const nextNode = nodes[i + 1];
+
       if (
-        (nodes[i + 1].type === "css-comment" &&
-          !hasNewline(options.originalText, locStart(nodes[i + 1]), {
+        (nextNode.type === "css-comment" &&
+          !hasNewline(options.originalText, locStart(nextNode), {
             backwards: true,
           }) &&
           !isFrontMatterNode(nodes[i])) ||
-        (nodes[i + 1].type === "css-atrule" &&
-          nodes[i + 1].name === "else" &&
+        (nextNode.type === "css-atrule" &&
+          nextNode.name === "else" &&
           nodes[i].type !== "css-comment")
       ) {
         parts.push(" ");
       } else {
-        parts.push(options.__isHTMLStyleAttribute ? line : hardline);
-        if (
-          isNextLineEmpty(options.originalText, pathChild.getValue(), locEnd) &&
-          !isFrontMatterNode(nodes[i])
-        ) {
-          parts.push(hardline);
+        if (options.retainBlankLines) {
+          const emptyLines = getNumberOfEmptyLines(
+            options.originalText,
+            pathChild.getValue(),
+            nextNode
+          );
+
+          if (emptyLines > 0) {
+            parts.push(...Array(emptyLines).fill(hardline));
+          }
+        } else {
+          parts.push(options.__isHTMLStyleAttribute ? line : hardline);
+          if (
+            isNextLineEmpty(
+              options.originalText,
+              pathChild.getValue(),
+              locEnd
+            ) &&
+            !isFrontMatterNode(nodes[i])
+          ) {
+            parts.push(hardline);
+          }
         }
       }
     }
@@ -1128,6 +1168,7 @@ function printNodeSequence(path, options, print) {
 
   return parts;
 }
+
 
 const STRING_REGEX = /(["'])(?:(?!\1)[^\\]|\\.)*\1/gs;
 const NUMBER_REGEX = /(?:\d*\.\d+|\d+\.?)(?:[Ee][+-]?\d+)?/g;
