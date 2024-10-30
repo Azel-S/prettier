@@ -319,16 +319,37 @@ function genericPrint(path, options, print) {
     // postcss-media-query-parser
     case "media-query-list": {
       const parts = [];
-      path.each((childPath) => {
+      path.each((childPath, i, nodes) => {
         const node = childPath.getValue();
         if (node.type === "media-query" && node.value === "") {
           return;
         }
         parts.push(print());
+    
+        if (i !== nodes.length - 1) {
+          const nextNode = nodes[i + 1];
+    
+          if (options.retainBlankLines) {
+            const emptyLines = getNumberOfEmptyLines(
+              options.originalText,
+              node,
+              nextNode
+            );
+    
+            if (emptyLines > 0) {
+              parts.push(",", ...Array(emptyLines).fill(hardline));
+            } else {
+              parts.push(",", line);
+            }
+          } else {
+            parts.push(",", line);
+          }
+        }
       }, "nodes");
-
-      return group(indent(join(line, parts)));
+    
+      return group(indent(join("", parts)));
     }
+    
     case "media-query": {
       return [
         join(" ", path.map(print, "nodes")),
@@ -369,21 +390,41 @@ function genericPrint(path, options, print) {
     }
     // postcss-selector-parser
     case "selector-root": {
+      const selectorParts = [];
+      const nodes = path.getValue().nodes;
+    
+      nodes.forEach((node, i) => {
+        selectorParts.push(path.map(print, "nodes")[i]);
+    
+        if (i !== nodes.length - 1) {
+          const nextNode = nodes[i + 1];
+    
+          if (options.retainBlankLines) {
+            const emptyLines = getNumberOfEmptyLines(
+              options.originalText,
+              node,
+              nextNode
+            );
+    
+            if (emptyLines > 0) {
+              selectorParts.push(",", ...Array(emptyLines).fill(hardline));
+            } else {
+              selectorParts.push(",", hardline);
+            }
+          } else {
+            selectorParts.push(",", hardline);
+          }
+        }
+      });
+    
       return group([
         insideAtRuleNode(path, "custom-selector")
           ? [getAncestorNode(path, "css-atrule").customSelector, line]
           : "",
-        join(
-          [
-            ",",
-            insideAtRuleNode(path, ["extend", "custom-selector", "nest"], options)
-              ? line
-              : hardline,
-          ],
-          path.map(print, "nodes")
-        ),
+        indent(selectorParts),
       ]);
     }
+    
     case "selector-selector": {
       return group(indent(path.map(print, "nodes")));
     }

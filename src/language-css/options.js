@@ -27,4 +27,10 @@ module.exports = {
     type: "boolean",
     description: "keeps multiple blank lines instead of collapsing into a single blank line"
   },
+  elseStatementNewLine: {
+    since: "0.0.0",
+    category: CATEGORY_CSS,
+    type: "boolean",
+    description: "puts else statement on a new line instead of on the same line as if statement right bracket.",
+  }
 };
