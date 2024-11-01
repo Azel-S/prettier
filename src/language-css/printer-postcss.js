@@ -288,7 +288,7 @@ function genericPrint(path, options, print) {
                 : "",
             ])
           : node.name === "else"
-          ? " "
+          ? options.elseStatementNewLine ? hardline : " "
           : "",
         node.nodes
           ? [
@@ -1169,16 +1169,19 @@ function printNodeSequence(path, options, print) {
       const nextNode = nodes[i + 1];
 
       if (
-        (nextNode.type === "css-comment" &&
-          !hasNewline(options.originalText, locStart(nextNode), {
-            backwards: true,
-          }) &&
-          !isFrontMatterNode(nodes[i])) ||
-        (nextNode.type === "css-atrule" &&
-          nextNode.name === "else" &&
-          nodes[i].type !== "css-comment")
+        nextNode.type === "css-comment" &&
+        !hasNewline(options.originalText, locStart(nextNode), {
+          backwards: true,
+        }) &&
+        !isFrontMatterNode(nodes[i])
       ) {
         parts.push(" ");
+      } else if (
+        nextNode.type === "css-atrule" &&
+        nextNode.name === "else" &&
+        nodes[i].type !== "css-comment"
+      ) {
+        parts.push(options.elseStatementNewLine ? hardline : " ");
       } else {
         if (options.retainBlankLines) {
           const emptyLines = getNumberOfEmptyLines(
@@ -1209,6 +1212,7 @@ function printNodeSequence(path, options, print) {
 
   return parts;
 }
+
 
 
 const STRING_REGEX = /(["'])(?:(?!\1)[^\\]|\\.)*\1/gs;
