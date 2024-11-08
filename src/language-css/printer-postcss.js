@@ -21,6 +21,7 @@ const {
     dedent,
     ifBreak,
     breakParent,
+    literalline,
   },
   utils: { removeLines, getDocParts },
 } = require("../document/index.js");
@@ -337,7 +338,7 @@ function genericPrint(path, options, print) {
             );
     
             if (emptyLines > 0) {
-              parts.push(",", ...Array(emptyLines).fill(hardline));
+              parts.push(",", ...Array(emptyLines).fill(literalline));
             } else {
               parts.push(",", line);
             }
@@ -407,9 +408,9 @@ function genericPrint(path, options, print) {
             );
     
             if (emptyLines > 0) {
-              selectorParts.push(",", ...Array(emptyLines).fill(hardline));
+              selectorParts.push(",", ...Array(emptyLines).fill(literalline));
             } else {
-              selectorParts.push(",", hardline);
+              selectorParts.push(",", literalline);
             }
           } else {
             selectorParts.push(",", hardline);
@@ -1130,21 +1131,25 @@ function genericPrint(path, options, print) {
 function getNumberOfEmptyLines(text, node, nextNode) {
   const nodeEndIndex = locEnd(node);
   const nextNodeStartIndex = locStart(nextNode);
-
   const betweenText = text.slice(nodeEndIndex, nextNodeStartIndex);
 
-  // Split the text into lines
-  const lines = betweenText.split(/\r\n|[\n\r\u2028\u2029]/);
+  // Match sequences of two or more newline characters
+  const matches = betweenText.match(/(\r?\n){2,}/g);
 
-  let emptyLines = 0;
-  for (const line of lines) {
-    if (line.trim() === "") {
-      emptyLines++;
-    }
+  if (!matches) {
+    return 0;
   }
 
-  return emptyLines;
+  let blankLines = 0;
+  for (const match of matches) {
+    const newlines = match.match(/\r?\n/g).length;
+    // Each additional newline beyond the first represents a blank line
+    blankLines += newlines - 1;
+  }
+
+  return blankLines;
 }
+
 
 
 
@@ -1191,7 +1196,9 @@ function printNodeSequence(path, options, print) {
           );
 
           if (emptyLines > 0) {
-            parts.push(...Array(emptyLines).fill(hardline));
+            parts.push(...Array(emptyLines).fill(literalline));
+          } else {
+            parts.push(options.__isHTMLStyleAttribute ? line : hardline);
           }
         } else {
           parts.push(options.__isHTMLStyleAttribute ? line : hardline);
