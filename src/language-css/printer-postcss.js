@@ -289,21 +289,25 @@ function genericPrint(path, options, print) {
                 : "",
             ])
           : node.name === "else"
-          ? options.elseStatementNewLine ? hardline : " "
+          ? (options.elseStatementNewLine
+            ? (options.allmanStyle ? "" : " ")
+            : (options.allmanStyle ? hardline : " "))
           : "",
         node.nodes
           ? [
               isSCSSControlDirectiveNode(node)
-                ? ""
-                : (node.selector &&
-                    !node.selector.nodes &&
-                    typeof node.selector.value === "string" &&
-                    lastLineHasInlineComment(node.selector.value)) ||
-                  (!node.selector &&
-                    typeof node.params === "string" &&
-                    lastLineHasInlineComment(node.params))
+              ? (node.name === "else" && options.allmanStyle ? hardline : "")
+              : ((node.selector &&
+                  !node.selector.nodes &&
+                  typeof node.selector.value === "string" &&
+                  lastLineHasInlineComment(node.selector.value)) ||
+                (!node.selector &&
+                  typeof node.params === "string" &&
+                  lastLineHasInlineComment(node.params))
                 ? line
-                : options.allmanStyle ? hardline : " ",
+                : options.allmanStyle
+                ? hardline
+                : " "),
               "{",
               indent([
                 node.nodes.length > 0 ? softline : "",
@@ -1133,21 +1137,10 @@ function getNumberOfEmptyLines(text, node, nextNode) {
   const nextNodeStartIndex = locStart(nextNode);
   const betweenText = text.slice(nodeEndIndex, nextNodeStartIndex);
 
-  // Match sequences of two or more newline characters
-  const matches = betweenText.match(/(\r?\n){2,}/g);
-
-  if (!matches) {
-    return 0;
-  }
-
-  let blankLines = 0;
-  for (const match of matches) {
-    const newlines = match.match(/\r?\n/g).length;
-    // Each additional newline beyond the first represents a blank line
-    blankLines += newlines - 1;
-  }
-
-  return blankLines;
+  const newlines = betweenText.match(/\r?\n/g) || [];
+  // If we have `n` newline chars, that corresponds to `n-1` blank lines.
+  // Example: "\n\n" = 2 newlines => 1 blank line, "\n\n\n" = 3 newlines => 2 blank lines.
+  return Math.max(0, newlines.length - 1);
 }
 
 
@@ -1196,18 +1189,18 @@ function printNodeSequence(path, options, print) {
           );
 
           if (emptyLines > 0) {
-            parts.push(...Array(emptyLines).fill(literalline));
+            // Insert the exact number of blank lines using literalline
+            for (let k = 0; k < emptyLines; k++) {
+              parts.push(literalline);
+            }
           } else {
+            // No blank lines, fallback to normal line break logic
             parts.push(options.__isHTMLStyleAttribute ? line : hardline);
           }
         } else {
           parts.push(options.__isHTMLStyleAttribute ? line : hardline);
           if (
-            isNextLineEmpty(
-              options.originalText,
-              pathChild.getValue(),
-              locEnd
-            ) &&
+            isNextLineEmpty(options.originalText, pathChild.getValue(), locEnd) &&
             !isFrontMatterNode(nodes[i])
           ) {
             parts.push(hardline);
@@ -1219,6 +1212,7 @@ function printNodeSequence(path, options, print) {
 
   return parts;
 }
+
 
 
 
