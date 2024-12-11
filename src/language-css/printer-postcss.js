@@ -288,10 +288,10 @@ function genericPrint(path, options, print) {
                   : line
                 : "",
             ])
-          : node.name === "else"
+          : node.name === "else" //fyi i know this is horribly redundant but after so much messing around im tired so im just gonna "refactor" later
           ? (options.elseStatementNewLine
             ? (options.allmanStyle ? "" : " ")
-            : (options.allmanStyle ? hardline : " "))
+            : (options.allmanStyle ? "" : " "))
           : "",
         node.nodes
           ? [
@@ -321,38 +321,17 @@ function genericPrint(path, options, print) {
           : ";",
       ];
     }
-    // postcss-media-query-parser
     case "media-query-list": {
       const parts = [];
-      path.each((childPath, i, nodes) => {
+      path.each((childPath) => {
         const node = childPath.getValue();
         if (node.type === "media-query" && node.value === "") {
           return;
         }
         parts.push(print());
-    
-        if (i !== nodes.length - 1) {
-          const nextNode = nodes[i + 1];
-    
-          if (options.retainBlankLines) {
-            const emptyLines = getNumberOfEmptyLines(
-              options.originalText,
-              node,
-              nextNode
-            );
-    
-            if (emptyLines > 0) {
-              parts.push(",", ...Array(emptyLines).fill(literalline));
-            } else {
-              parts.push(",", line);
-            }
-          } else {
-            parts.push(",", line);
-          }
-        }
       }, "nodes");
-    
-      return group(indent(join("", parts)));
+
+      return group(indent(join(line, parts)));
     }
     
     case "media-query": {
@@ -395,38 +374,19 @@ function genericPrint(path, options, print) {
     }
     // postcss-selector-parser
     case "selector-root": {
-      const selectorParts = [];
-      const nodes = path.getValue().nodes;
-    
-      nodes.forEach((node, i) => {
-        selectorParts.push(path.map(print, "nodes")[i]);
-    
-        if (i !== nodes.length - 1) {
-          const nextNode = nodes[i + 1];
-    
-          if (options.retainBlankLines) {
-            const emptyLines = getNumberOfEmptyLines(
-              options.originalText,
-              node,
-              nextNode
-            );
-    
-            if (emptyLines > 0) {
-              selectorParts.push(",", ...Array(emptyLines).fill(literalline));
-            } else {
-              selectorParts.push(",", literalline);
-            }
-          } else {
-            selectorParts.push(",", hardline);
-          }
-        }
-      });
-    
       return group([
         insideAtRuleNode(path, "custom-selector")
           ? [getAncestorNode(path, "css-atrule").customSelector, line]
           : "",
-        indent(selectorParts),
+        join(
+          [
+            ",",
+            insideAtRuleNode(path, ["extend", "custom-selector", "nest"], options)
+              ? line
+              : hardline,
+          ],
+          path.map(print, "nodes")
+        ),
       ]);
     }
     
@@ -1131,6 +1091,10 @@ function genericPrint(path, options, print) {
   }
 }
 
+/*
+Below is a function to aid in retainBlankLines. However, that function has caused more problems than solutions, so for now it is being removed.
+Keeping this function for now in case it is useful later.
+
 // Helper function to count the number of empty lines between nodes
 function getNumberOfEmptyLines(text, node, nextNode) {
   const nodeEndIndex = locEnd(node);
@@ -1142,7 +1106,7 @@ function getNumberOfEmptyLines(text, node, nextNode) {
   // Example: "\n\n" = 2 newlines => 1 blank line, "\n\n\n" = 3 newlines => 2 blank lines.
   return Math.max(0, newlines.length - 1);
 }
-
+*/
 
 
 
@@ -1167,6 +1131,12 @@ function printNodeSequence(path, options, print) {
       const nextNode = nodes[i + 1];
 
       if (
+        nextNode.type === "css-atrule" &&
+        nextNode.name === "else" &&
+        nodes[i].type !== "css-comment"
+      ) {
+        parts.push(options.elseStatementNewLine ? hardline : " ");
+      } else if (
         nextNode.type === "css-comment" &&
         !hasNewline(options.originalText, locStart(nextNode), {
           backwards: true,
@@ -1174,37 +1144,13 @@ function printNodeSequence(path, options, print) {
         !isFrontMatterNode(nodes[i])
       ) {
         parts.push(" ");
-      } else if (
-        nextNode.type === "css-atrule" &&
-        nextNode.name === "else" &&
-        nodes[i].type !== "css-comment"
-      ) {
-        parts.push(options.elseStatementNewLine ? hardline : " ");
       } else {
-        if (options.retainBlankLines) {
-          const emptyLines = getNumberOfEmptyLines(
-            options.originalText,
-            pathChild.getValue(),
-            nextNode
-          );
-
-          if (emptyLines > 0) {
-            // Insert the exact number of blank lines using literalline
-            for (let k = 0; k < emptyLines; k++) {
-              parts.push(literalline);
-            }
-          } else {
-            // No blank lines, fallback to normal line break logic
-            parts.push(options.__isHTMLStyleAttribute ? line : hardline);
-          }
-        } else {
-          parts.push(options.__isHTMLStyleAttribute ? line : hardline);
-          if (
-            isNextLineEmpty(options.originalText, pathChild.getValue(), locEnd) &&
-            !isFrontMatterNode(nodes[i])
-          ) {
-            parts.push(hardline);
-          }
+        parts.push(options.__isHTMLStyleAttribute ? line : hardline);
+        if (
+          isNextLineEmpty(options.originalText, pathChild.getValue(), locEnd) &&
+          !isFrontMatterNode(nodes[i])
+        ) {
+          parts.push(hardline);
         }
       }
     }
@@ -1212,6 +1158,7 @@ function printNodeSequence(path, options, print) {
 
   return parts;
 }
+
 
 
 

@@ -31777,31 +31777,18 @@ var require_printer_postcss = __commonJS2({
               return ["@", node.name, ": ", node.value ? print("value") : "", node.raws.between.trim() ? node.raws.between.trim() + " " : "", node.nodes ? [options.allmanStyle ? hardline : "", "{", indent([node.nodes.length > 0 ? softline : "", printNodeSequence(path, options, print)]), softline, "}"] : "", isTemplatePlaceholderNodeWithoutSemiColon ? "" : ";"];
             }
           }
-          return ["@", isDetachedRulesetCallNode(node) || node.name.endsWith(":") ? node.name : maybeToLowerCase(node.name), node.params ? [isDetachedRulesetCallNode(node) ? "" : isTemplatePlaceholderNode(node) ? node.raws.afterName === "" ? "" : node.name.endsWith(":") ? " " : /^\s*\n\s*\n/.test(node.raws.afterName) ? [hardline, hardline] : /^\s*\n/.test(node.raws.afterName) ? hardline : " " : " ", print("params")] : "", node.selector ? indent([" ", print("selector")]) : "", node.value ? group([" ", print("value"), isSCSSControlDirectiveNode(node) ? hasParensAroundNode(node) ? " " : line : ""]) : node.name === "else" ? options.elseStatementNewLine ? options.allmanStyle ? "" : " " : options.allmanStyle ? hardline : " " : "", node.nodes ? [isSCSSControlDirectiveNode(node) ? node.name === "else" && options.allmanStyle ? hardline : "" : node.selector && !node.selector.nodes && typeof node.selector.value === "string" && lastLineHasInlineComment(node.selector.value) || !node.selector && typeof node.params === "string" && lastLineHasInlineComment(node.params) ? line : options.allmanStyle ? hardline : " ", "{", indent([node.nodes.length > 0 ? softline : "", printNodeSequence(path, options, print)]), softline, "}"] : isTemplatePlaceholderNodeWithoutSemiColon ? "" : ";"];
+          return ["@", isDetachedRulesetCallNode(node) || node.name.endsWith(":") ? node.name : maybeToLowerCase(node.name), node.params ? [isDetachedRulesetCallNode(node) ? "" : isTemplatePlaceholderNode(node) ? node.raws.afterName === "" ? "" : node.name.endsWith(":") ? " " : /^\s*\n\s*\n/.test(node.raws.afterName) ? [hardline, hardline] : /^\s*\n/.test(node.raws.afterName) ? hardline : " " : " ", print("params")] : "", node.selector ? indent([" ", print("selector")]) : "", node.value ? group([" ", print("value"), isSCSSControlDirectiveNode(node) ? hasParensAroundNode(node) ? " " : line : ""]) : node.name === "else" ? options.elseStatementNewLine ? options.allmanStyle ? "" : " " : options.allmanStyle ? "" : " " : "", node.nodes ? [isSCSSControlDirectiveNode(node) ? node.name === "else" && options.allmanStyle ? hardline : "" : node.selector && !node.selector.nodes && typeof node.selector.value === "string" && lastLineHasInlineComment(node.selector.value) || !node.selector && typeof node.params === "string" && lastLineHasInlineComment(node.params) ? line : options.allmanStyle ? hardline : " ", "{", indent([node.nodes.length > 0 ? softline : "", printNodeSequence(path, options, print)]), softline, "}"] : isTemplatePlaceholderNodeWithoutSemiColon ? "" : ";"];
         }
         case "media-query-list": {
           const parts = [];
-          path.each((childPath, i, nodes) => {
+          path.each((childPath) => {
             const node2 = childPath.getValue();
             if (node2.type === "media-query" && node2.value === "") {
               return;
             }
             parts.push(print());
-            if (i !== nodes.length - 1) {
-              const nextNode = nodes[i + 1];
-              if (options.retainBlankLines) {
-                const emptyLines = getNumberOfEmptyLines(options.originalText, node2, nextNode);
-                if (emptyLines > 0) {
-                  parts.push(",", ...Array(emptyLines).fill(literalline));
-                } else {
-                  parts.push(",", line);
-                }
-              } else {
-                parts.push(",", line);
-              }
-            }
           }, "nodes");
-          return group(indent(join("", parts)));
+          return group(indent(join(line, parts)));
         }
         case "media-query": {
           return [join(" ", path.map(print, "nodes")), isLastNode(path, node) ? "" : ","];
@@ -31834,25 +31821,7 @@ var require_printer_postcss = __commonJS2({
           return node.value;
         }
         case "selector-root": {
-          const selectorParts = [];
-          const nodes = path.getValue().nodes;
-          nodes.forEach((node2, i) => {
-            selectorParts.push(path.map(print, "nodes")[i]);
-            if (i !== nodes.length - 1) {
-              const nextNode = nodes[i + 1];
-              if (options.retainBlankLines) {
-                const emptyLines = getNumberOfEmptyLines(options.originalText, node2, nextNode);
-                if (emptyLines > 0) {
-                  selectorParts.push(",", ...Array(emptyLines).fill(literalline));
-                } else {
-                  selectorParts.push(",", literalline);
-                }
-              } else {
-                selectorParts.push(",", hardline);
-              }
-            }
-          });
-          return group([insideAtRuleNode(path, "custom-selector") ? [getAncestorNode(path, "css-atrule").customSelector, line] : "", indent(selectorParts)]);
+          return group([insideAtRuleNode(path, "custom-selector") ? [getAncestorNode(path, "css-atrule").customSelector, line] : "", join([",", insideAtRuleNode(path, ["extend", "custom-selector", "nest"], options) ? line : hardline], path.map(print, "nodes"))]);
         }
         case "selector-selector": {
           return group(indent(path.map(print, "nodes")));
@@ -32176,13 +32145,6 @@ var require_printer_postcss = __commonJS2({
           throw new Error(`Unknown postcss type ${JSON.stringify(node.type)}`);
       }
     }
-    function getNumberOfEmptyLines(text, node, nextNode) {
-      const nodeEndIndex = locEnd(node);
-      const nextNodeStartIndex = locStart(nextNode);
-      const betweenText = text.slice(nodeEndIndex, nextNodeStartIndex);
-      const newlines = betweenText.match(/\r?\n/g) || [];
-      return Math.max(0, newlines.length - 1);
-    }
     function printNodeSequence(path, options, print) {
       const parts = [];
       path.each((pathChild, i, nodes) => {
@@ -32195,27 +32157,16 @@ var require_printer_postcss = __commonJS2({
         }
         if (i !== nodes.length - 1) {
           const nextNode = nodes[i + 1];
-          if (nextNode.type === "css-comment" && !hasNewline(options.originalText, locStart(nextNode), {
+          if (nextNode.type === "css-atrule" && nextNode.name === "else" && nodes[i].type !== "css-comment") {
+            parts.push(options.elseStatementNewLine ? hardline : " ");
+          } else if (nextNode.type === "css-comment" && !hasNewline(options.originalText, locStart(nextNode), {
             backwards: true
           }) && !isFrontMatterNode(nodes[i])) {
             parts.push(" ");
-          } else if (nextNode.type === "css-atrule" && nextNode.name === "else" && nodes[i].type !== "css-comment") {
-            parts.push(options.elseStatementNewLine ? hardline : " ");
           } else {
-            if (options.retainBlankLines) {
-              const emptyLines = getNumberOfEmptyLines(options.originalText, pathChild.getValue(), nextNode);
-              if (emptyLines > 0) {
-                for (let k = 0; k < emptyLines; k++) {
-                  parts.push(literalline);
-                }
-              } else {
-                parts.push(options.__isHTMLStyleAttribute ? line : hardline);
-              }
-            } else {
-              parts.push(options.__isHTMLStyleAttribute ? line : hardline);
-              if (isNextLineEmpty(options.originalText, pathChild.getValue(), locEnd) && !isFrontMatterNode(nodes[i])) {
-                parts.push(hardline);
-              }
+            parts.push(options.__isHTMLStyleAttribute ? line : hardline);
+            if (isNextLineEmpty(options.originalText, pathChild.getValue(), locEnd) && !isFrontMatterNode(nodes[i])) {
+              parts.push(hardline);
             }
           }
         }
