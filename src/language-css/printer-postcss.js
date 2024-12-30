@@ -21,6 +21,7 @@ const {
     dedent,
     ifBreak,
     breakParent,
+    literalline,
   },
   utils: { removeLines, getDocParts },
 } = require("../document/index.js");
@@ -129,7 +130,7 @@ function genericPrint(path, options, print) {
               node.selector.type === "selector-unknown" &&
               lastLineHasInlineComment(node.selector.value)
                 ? line
-                : " ",
+                : options.allmanStyle ? hardline : " ",
               "{",
               node.nodes.length > 0
                 ? indent([hardline, printNodeSequence(path, options, print)])
@@ -187,7 +188,8 @@ function genericPrint(path, options, print) {
           : "",
         node.nodes
           ? [
-              " {",
+              options.allmanStyle ? hardline : " ",
+              "{",
               indent([softline, printNodeSequence(path, options, print)]),
               softline,
               "}",
@@ -234,6 +236,7 @@ function genericPrint(path, options, print) {
             node.raws.between.trim() ? node.raws.between.trim() + " " : "",
             node.nodes
               ? [
+                  options.allmanStyle ? hardline : "",
                   "{",
                   indent([
                     node.nodes.length > 0 ? softline : "",
@@ -285,22 +288,26 @@ function genericPrint(path, options, print) {
                   : line
                 : "",
             ])
-          : node.name === "else"
-          ? " "
+          : node.name === "else" //fyi i know this is horribly redundant but after so much messing around im tired so im just gonna "refactor" later
+          ? (options.elseStatementNewLine
+            ? (options.allmanStyle ? "" : " ")
+            : (options.allmanStyle ? "" : " "))
           : "",
         node.nodes
           ? [
               isSCSSControlDirectiveNode(node)
-                ? ""
-                : (node.selector &&
-                    !node.selector.nodes &&
-                    typeof node.selector.value === "string" &&
-                    lastLineHasInlineComment(node.selector.value)) ||
-                  (!node.selector &&
-                    typeof node.params === "string" &&
-                    lastLineHasInlineComment(node.params))
+              ? (node.name === "else" && options.allmanStyle ? hardline : "")
+              : ((node.selector &&
+                  !node.selector.nodes &&
+                  typeof node.selector.value === "string" &&
+                  lastLineHasInlineComment(node.selector.value)) ||
+                (!node.selector &&
+                  typeof node.params === "string" &&
+                  lastLineHasInlineComment(node.params))
                 ? line
-                : " ",
+                : options.allmanStyle
+                ? hardline
+                : " "),
               "{",
               indent([
                 node.nodes.length > 0 ? softline : "",
@@ -314,7 +321,6 @@ function genericPrint(path, options, print) {
           : ";",
       ];
     }
-    // postcss-media-query-parser
     case "media-query-list": {
       const parts = [];
       path.each((childPath) => {
@@ -327,6 +333,7 @@ function genericPrint(path, options, print) {
 
       return group(indent(join(line, parts)));
     }
+    
     case "media-query": {
       return [
         join(" ", path.map(print, "nodes")),
@@ -382,6 +389,7 @@ function genericPrint(path, options, print) {
         ),
       ]);
     }
+    
     case "selector-selector": {
       return group(indent(path.map(print, "nodes")));
     }
@@ -1083,6 +1091,25 @@ function genericPrint(path, options, print) {
   }
 }
 
+/*
+Below is a function to aid in retainBlankLines. However, that function has caused more problems than solutions, so for now it is being removed.
+Keeping this function for now in case it is useful later.
+
+// Helper function to count the number of empty lines between nodes
+function getNumberOfEmptyLines(text, node, nextNode) {
+  const nodeEndIndex = locEnd(node);
+  const nextNodeStartIndex = locStart(nextNode);
+  const betweenText = text.slice(nodeEndIndex, nextNodeStartIndex);
+
+  const newlines = betweenText.match(/\r?\n/g) || [];
+  // If we have `n` newline chars, that corresponds to `n-1` blank lines.
+  // Example: "\n\n" = 2 newlines => 1 blank line, "\n\n\n" = 3 newlines => 2 blank lines.
+  return Math.max(0, newlines.length - 1);
+}
+*/
+
+
+
 function printNodeSequence(path, options, print) {
   const parts = [];
   path.each((pathChild, i, nodes) => {
@@ -1101,15 +1128,20 @@ function printNodeSequence(path, options, print) {
     }
 
     if (i !== nodes.length - 1) {
+      const nextNode = nodes[i + 1];
+
       if (
-        (nodes[i + 1].type === "css-comment" &&
-          !hasNewline(options.originalText, locStart(nodes[i + 1]), {
-            backwards: true,
-          }) &&
-          !isFrontMatterNode(nodes[i])) ||
-        (nodes[i + 1].type === "css-atrule" &&
-          nodes[i + 1].name === "else" &&
-          nodes[i].type !== "css-comment")
+        nextNode.type === "css-atrule" &&
+        nextNode.name === "else" &&
+        nodes[i].type !== "css-comment"
+      ) {
+        parts.push(options.elseStatementNewLine ? hardline : " ");
+      } else if (
+        nextNode.type === "css-comment" &&
+        !hasNewline(options.originalText, locStart(nextNode), {
+          backwards: true,
+        }) &&
+        !isFrontMatterNode(nodes[i])
       ) {
         parts.push(" ");
       } else {
@@ -1126,6 +1158,10 @@ function printNodeSequence(path, options, print) {
 
   return parts;
 }
+
+
+
+
 
 const STRING_REGEX = /(["'])(?:(?!\1)[^\\]|\\.)*\1/gs;
 const NUMBER_REGEX = /(?:\d*\.\d+|\d+\.?)(?:[Ee][+-]?\d+)?/g;

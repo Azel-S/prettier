@@ -28387,6 +28387,7 @@ var require_options2 = __commonJS2({
         since: "0.0.0",
         category: CATEGORY_JAVASCRIPT,
         type: "boolean",
+        default: false,
         description: "puts else statement on a new line instead of on the same line as if statement right bracket."
       },
       multiEmptyLine: {
@@ -31653,7 +31654,8 @@ var require_printer_postcss = __commonJS2({
         indent,
         dedent,
         ifBreak,
-        breakParent
+        breakParent,
+        literalline
       },
       utils: {
         removeLines,
@@ -31747,7 +31749,7 @@ var require_printer_postcss = __commonJS2({
           return isInlineComment ? text.trimEnd() : text;
         }
         case "css-rule": {
-          return [print("selector"), node.important ? " !important" : "", node.nodes ? [node.selector && node.selector.type === "selector-unknown" && lastLineHasInlineComment(node.selector.value) ? line : " ", "{", node.nodes.length > 0 ? indent([hardline, printNodeSequence(path, options, print)]) : "", hardline, "}", isDetachedRulesetDeclarationNode(node) ? ";" : ""] : ";"];
+          return [print("selector"), node.important ? " !important" : "", node.nodes ? [node.selector && node.selector.type === "selector-unknown" && lastLineHasInlineComment(node.selector.value) ? line : options.allmanStyle ? hardline : " ", "{", node.nodes.length > 0 ? indent([hardline, printNodeSequence(path, options, print)]) : "", hardline, "}", isDetachedRulesetDeclarationNode(node) ? ";" : ""] : ";"];
         }
         case "css-decl": {
           const parentNode = path.getParentNode();
@@ -31760,7 +31762,7 @@ var require_printer_postcss = __commonJS2({
           if (!isColon && lastLineHasInlineComment(trimmedBetween)) {
             value = indent([hardline, dedent(value)]);
           }
-          return [node.raws.before.replace(/[\s;]/g, ""), parentNode.type === "css-atrule" && parentNode.variable || insideICSSRuleNode(path) ? node.prop : maybeToLowerCase(node.prop), trimmedBetween.startsWith("//") ? " " : "", trimmedBetween, node.extend ? "" : " ", isLessParser(options) && node.extend && node.selector ? ["extend(", print("selector"), ")"] : "", value, node.raws.important ? node.raws.important.replace(/\s*!\s*important/i, " !important") : node.important ? " !important" : "", node.raws.scssDefault ? node.raws.scssDefault.replace(/\s*!default/i, " !default") : node.scssDefault ? " !default" : "", node.raws.scssGlobal ? node.raws.scssGlobal.replace(/\s*!global/i, " !global") : node.scssGlobal ? " !global" : "", node.nodes ? [" {", indent([softline, printNodeSequence(path, options, print)]), softline, "}"] : isTemplatePropNode(node) && !parentNode.raws.semicolon && options.originalText[locEnd(node) - 1] !== ";" ? "" : options.__isHTMLStyleAttribute && isLastNode(path, node) ? ifBreak(";") : ";"];
+          return [node.raws.before.replace(/[\s;]/g, ""), parentNode.type === "css-atrule" && parentNode.variable || insideICSSRuleNode(path) ? node.prop : maybeToLowerCase(node.prop), trimmedBetween.startsWith("//") ? " " : "", trimmedBetween, node.extend ? "" : " ", isLessParser(options) && node.extend && node.selector ? ["extend(", print("selector"), ")"] : "", value, node.raws.important ? node.raws.important.replace(/\s*!\s*important/i, " !important") : node.important ? " !important" : "", node.raws.scssDefault ? node.raws.scssDefault.replace(/\s*!default/i, " !default") : node.scssDefault ? " !default" : "", node.raws.scssGlobal ? node.raws.scssGlobal.replace(/\s*!global/i, " !global") : node.scssGlobal ? " !global" : "", node.nodes ? [options.allmanStyle ? hardline : " ", "{", indent([softline, printNodeSequence(path, options, print)]), softline, "}"] : isTemplatePropNode(node) && !parentNode.raws.semicolon && options.originalText[locEnd(node) - 1] !== ";" ? "" : options.__isHTMLStyleAttribute && isLastNode(path, node) ? ifBreak(";") : ";"];
         }
         case "css-atrule": {
           const parentNode = path.getParentNode();
@@ -31773,10 +31775,10 @@ var require_printer_postcss = __commonJS2({
               return [node.name, print("params"), isTemplatePlaceholderNodeWithoutSemiColon ? "" : ";"];
             }
             if (node.variable) {
-              return ["@", node.name, ": ", node.value ? print("value") : "", node.raws.between.trim() ? node.raws.between.trim() + " " : "", node.nodes ? ["{", indent([node.nodes.length > 0 ? softline : "", printNodeSequence(path, options, print)]), softline, "}"] : "", isTemplatePlaceholderNodeWithoutSemiColon ? "" : ";"];
+              return ["@", node.name, ": ", node.value ? print("value") : "", node.raws.between.trim() ? node.raws.between.trim() + " " : "", node.nodes ? [options.allmanStyle ? hardline : "", "{", indent([node.nodes.length > 0 ? softline : "", printNodeSequence(path, options, print)]), softline, "}"] : "", isTemplatePlaceholderNodeWithoutSemiColon ? "" : ";"];
             }
           }
-          return ["@", isDetachedRulesetCallNode(node) || node.name.endsWith(":") ? node.name : maybeToLowerCase(node.name), node.params ? [isDetachedRulesetCallNode(node) ? "" : isTemplatePlaceholderNode(node) ? node.raws.afterName === "" ? "" : node.name.endsWith(":") ? " " : /^\s*\n\s*\n/.test(node.raws.afterName) ? [hardline, hardline] : /^\s*\n/.test(node.raws.afterName) ? hardline : " " : " ", print("params")] : "", node.selector ? indent([" ", print("selector")]) : "", node.value ? group([" ", print("value"), isSCSSControlDirectiveNode(node) ? hasParensAroundNode(node) ? " " : line : ""]) : node.name === "else" ? " " : "", node.nodes ? [isSCSSControlDirectiveNode(node) ? "" : node.selector && !node.selector.nodes && typeof node.selector.value === "string" && lastLineHasInlineComment(node.selector.value) || !node.selector && typeof node.params === "string" && lastLineHasInlineComment(node.params) ? line : " ", "{", indent([node.nodes.length > 0 ? softline : "", printNodeSequence(path, options, print)]), softline, "}"] : isTemplatePlaceholderNodeWithoutSemiColon ? "" : ";"];
+          return ["@", isDetachedRulesetCallNode(node) || node.name.endsWith(":") ? node.name : maybeToLowerCase(node.name), node.params ? [isDetachedRulesetCallNode(node) ? "" : isTemplatePlaceholderNode(node) ? node.raws.afterName === "" ? "" : node.name.endsWith(":") ? " " : /^\s*\n\s*\n/.test(node.raws.afterName) ? [hardline, hardline] : /^\s*\n/.test(node.raws.afterName) ? hardline : " " : " ", print("params")] : "", node.selector ? indent([" ", print("selector")]) : "", node.value ? group([" ", print("value"), isSCSSControlDirectiveNode(node) ? hasParensAroundNode(node) ? " " : line : ""]) : node.name === "else" ? options.elseStatementNewLine ? options.allmanStyle ? "" : " " : options.allmanStyle ? "" : " " : "", node.nodes ? [isSCSSControlDirectiveNode(node) ? node.name === "else" && options.allmanStyle ? hardline : "" : node.selector && !node.selector.nodes && typeof node.selector.value === "string" && lastLineHasInlineComment(node.selector.value) || !node.selector && typeof node.params === "string" && lastLineHasInlineComment(node.params) ? line : options.allmanStyle ? hardline : " ", "{", indent([node.nodes.length > 0 ? softline : "", printNodeSequence(path, options, print)]), softline, "}"] : isTemplatePlaceholderNodeWithoutSemiColon ? "" : ";"];
         }
         case "media-query-list": {
           const parts = [];
@@ -32155,9 +32157,12 @@ var require_printer_postcss = __commonJS2({
           parts.push(print());
         }
         if (i !== nodes.length - 1) {
-          if (nodes[i + 1].type === "css-comment" && !hasNewline(options.originalText, locStart(nodes[i + 1]), {
+          const nextNode = nodes[i + 1];
+          if (nextNode.type === "css-atrule" && nextNode.name === "else" && nodes[i].type !== "css-comment") {
+            parts.push(options.elseStatementNewLine ? hardline : " ");
+          } else if (nextNode.type === "css-comment" && !hasNewline(options.originalText, locStart(nextNode), {
             backwards: true
-          }) && !isFrontMatterNode(nodes[i]) || nodes[i + 1].type === "css-atrule" && nodes[i + 1].name === "else" && nodes[i].type !== "css-comment") {
+          }) && !isFrontMatterNode(nodes[i])) {
             parts.push(" ");
           } else {
             parts.push(options.__isHTMLStyleAttribute ? line : hardline);
@@ -32208,6 +32213,26 @@ var require_options3 = __commonJS2({
         type: "boolean",
         default: false,
         description: "allow multiple css selectors to be on the same line"
+      },
+      allmanStyle: {
+        since: "1.0.0",
+        category: CATEGORY_CSS,
+        type: "boolean",
+        default: false,
+        description: "Puts the '{' on a new line."
+      },
+      retainBlankLines: {
+        since: "0.0.0",
+        category: CATEGORY_CSS,
+        type: "boolean",
+        description: "keeps multiple blank lines instead of collapsing into a single blank line"
+      },
+      elseStatementNewLine: {
+        since: "0.0.0",
+        category: CATEGORY_CSS,
+        type: "boolean",
+        default: false,
+        description: "puts else statement on a new line instead of on the same line as if statement right bracket."
       }
     };
   }
