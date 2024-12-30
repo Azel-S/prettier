@@ -28387,6 +28387,7 @@ var require_options2 = __commonJS2({
         since: "0.0.0",
         category: CATEGORY_JAVASCRIPT,
         type: "boolean",
+        default: false,
         description: "puts else statement on a new line instead of on the same line as if statement right bracket."
       },
       multiEmptyLine: {
@@ -32230,6 +32231,7 @@ var require_options3 = __commonJS2({
         since: "0.0.0",
         category: CATEGORY_CSS,
         type: "boolean",
+        default: false,
         description: "puts else statement on a new line instead of on the same line as if statement right bracket."
       }
     };

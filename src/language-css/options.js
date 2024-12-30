@@ -31,6 +31,7 @@ module.exports = {
     since: "0.0.0",
     category: CATEGORY_CSS,
     type: "boolean",
+    default: false,
     description: "puts else statement on a new line instead of on the same line as if statement right bracket.",
   }
 };
